@@ -2,4 +2,8 @@
     <string name="app_name">BetterMe</string>
     <string name="home">Home</string>
     <string name="history">History</string>
+    <string name="homeTitle">BetterMe</string>
+    <string name="homeMonth">February</string>
+    <string name="dayOfMonth">21st</string>
+    <string name="habit1">habit1</string>
 </resources>
