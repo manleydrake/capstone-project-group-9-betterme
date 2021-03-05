@@ -35,7 +35,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
         android:id="@+id/habitSection"
         android:layout_below="@+id/dayLabel"
         android:layout_marginHorizontal="20dp"
@@ -51,17 +51,25 @@
             android:id="@+id/habit_label">
         </TextView>
 
-
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_below="@+id/habit_label">
 
             <ListView
                 android:id="@+id/habit_list"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </ScrollView>
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:scrollbarSize="3dp"
+                android:scrollbarStyle="outsideOverlay"
+                android:scrollbars="vertical"
+                android:scrollingCache="true"
+                android:smoothScrollbar="true"/>
+
+        </LinearLayout>
+
+
 
         <Button
             android:layout_width="wrap_content"

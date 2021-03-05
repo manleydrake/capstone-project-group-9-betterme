@@ -6,6 +6,10 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,6 +20,9 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                new HomeFragment()).commit();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
@@ -44,4 +51,5 @@ public class MainActivity extends AppCompatActivity {
     public void setActionBarTitle(String title){
         getSupportActionBar().setTitle(title);
     }
+
 }
