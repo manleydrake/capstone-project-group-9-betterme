@@ -4,123 +4,120 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="@color/white">
 
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:id="@+id/dayLabel">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <!-- ToDo: Need to change the arrows to be buttons on either side of the date
+        textView that when clicked update the string used for the text
+         make them two buttons that are centered vertically in the relative layout
+         and have the buttons show up as a drawable arrow design?-->
+        <TextView
+            android:id="@+id/displayMonth"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/dayLabel">
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="@string/homeMonth"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
-            <!-- ToDo: Need to change the arrows to be buttons on either side of the date
-            textView that when clicked update the string used for the text -->
-            <TextView
-                android:id="@+id/displayMonth"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:gravity="center"
-                android:text="@string/homeMonth"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/displayDay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/displayMonth"
-                android:text="@string/dayOfMonth"
-                android:textStyle="bold" />
-        </RelativeLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/displayDay"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/habitSection"
-            android:layout_below="@+id/dayLabel">
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/displayMonth"
+            android:text="@string/dayOfMonth"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
-            <!--Change from button to be another frame layout that will hold the list
-            then can make the background color of the frame layout whatever color we want-->
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="359dp"
-                android:layout_height="84dp"
-                android:layout_marginStart="33dp"
-                android:layout_marginLeft="33dp"
-                android:layout_marginTop="22dp"
-                android:background="#79E8F6"
-                android:gravity="start"
-                android:text="Habits" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/habitSection"
+        android:layout_below="@+id/dayLabel">
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/addHabitBTN"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                app:backgroundTint="#FFFFFF"
-                app:srcCompat="@android:drawable/ic_input_add" />
+        <!--Change from button to be another frame layout that will hold the list
+        then can make the background color of the frame layout whatever color we want-->
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="359dp"
+            android:layout_height="84dp"
+            android:layout_marginStart="33dp"
+            android:layout_marginLeft="33dp"
+            android:layout_marginTop="22dp"
+            android:background="#79E8F6"
+            android:gravity="start"
+            android:text="Habits" />
 
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/addHabitBTN"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/symptomSection"
-            android:layout_below="@+id/habitSection">
+            android:layout_gravity="right"
+            app:backgroundTint="#FFFFFF"
+            app:srcCompat="@android:drawable/ic_input_add" />
 
-            <!-- ToDo: change from a button to a frame layout or another layout that
-            can hold a list of text values or anything else -->
-            <Button
-                android:id="@+id/symptoms"
-                android:layout_width="359dp"
-                android:layout_height="84dp"
-                android:layout_marginStart="33dp"
-                android:layout_marginLeft="33dp"
-                android:layout_marginTop="22dp"
-                android:background="#79E8F6"
-                android:gravity="start"
-                android:text="Symptoms" />
+    </FrameLayout>
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/addSymptom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                app:backgroundTint="#FFFFFF"
-                app:srcCompat="@android:drawable/ic_input_add" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/symptomSection"
+        android:layout_below="@+id/habitSection">
 
-        </FrameLayout>
+        <!-- ToDo: change from a button to a frame layout or another layout that
+        can hold a list of text values or anything else -->
+        <Button
+            android:id="@+id/symptoms"
+            android:layout_width="359dp"
+            android:layout_height="84dp"
+            android:layout_marginStart="33dp"
+            android:layout_marginLeft="33dp"
+            android:layout_marginTop="22dp"
+            android:background="#79E8F6"
+            android:gravity="start"
+            android:text="Symptoms" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/addSymptom"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/noteSection"
-            android:layout_below="@+id/symptomSection">
+            android:layout_gravity="right"
+            app:backgroundTint="#FFFFFF"
+            app:srcCompat="@android:drawable/ic_input_add" />
 
-            <!-- ToDo: this should not be a button, change to a frame layout or another layout
-    that can hold a list of text values or anything else-->
-            <Button
-                android:id="@+id/notesList"
-                android:layout_width="359dp"
-                android:layout_height="84dp"
-                android:layout_marginStart="33dp"
-                android:layout_marginLeft="33dp"
-                android:layout_marginTop="22dp"
-                android:background="#79E8F6"
-                android:gravity="start"
-                android:text="Notes" />
+    </FrameLayout>
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/addNote"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                app:backgroundTint="#FFFFFF"
-                app:srcCompat="@android:drawable/ic_input_add" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/noteSection"
+        android:layout_below="@+id/symptomSection">
 
-        </FrameLayout>
+        <!-- ToDo: this should not be a button, change to a frame layout or another layout
+that can hold a list of text values or anything else-->
+        <Button
+            android:id="@+id/notesList"
+            android:layout_width="359dp"
+            android:layout_height="84dp"
+            android:layout_marginStart="33dp"
+            android:layout_marginLeft="33dp"
+            android:layout_marginTop="22dp"
+            android:background="#79E8F6"
+            android:gravity="start"
+            android:text="Notes" />
 
-    </ScrollView>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/addNote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            app:backgroundTint="#FFFFFF"
+            app:srcCompat="@android:drawable/ic_input_add" />
+
+    </FrameLayout>
+
 </RelativeLayout>
