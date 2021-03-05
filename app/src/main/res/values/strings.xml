@@ -6,4 +6,6 @@
     <string name="homeMonth">February</string>
     <string name="dayOfMonth">21st</string>
     <string name="habit1">habit1</string>
+    <string name="add">Add</string>
+    <string name="habits">Habits</string>
 </resources>

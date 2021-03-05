@@ -12,6 +12,8 @@ public class NewHabitFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
+        ((MainActivity) getActivity()).setActionBarTitle("New Habit");
+
         return inflater.inflate(R.layout.fragment_new_habit, container, false);
     }
 }

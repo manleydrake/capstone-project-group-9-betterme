@@ -33,14 +33,45 @@
             android:textStyle="bold" />
     </RelativeLayout>
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/habitSection"
-        android:layout_below="@+id/dayLabel">
+        android:layout_below="@+id/dayLabel"
+        android:layout_marginHorizontal="20dp"
+        android:background="#79E8F6">
 
         <!--Change from button to be another frame layout that will hold the list
-        then can make the background color of the frame layout whatever color we want-->
+        then can make the background color of the frame layout whatever color we want
+        source: https://www.sitepoint.com/starting-android-development-creating-todo-app/-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/habits"
+            android:id="@+id/habit_label">
+        </TextView>
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/habit_label">
+
+            <ListView
+                android:id="@+id/habit_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </ScrollView>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:layout_alignParentRight="true"
+            android:id="@+id/add_habit_button"
+            android:text="@string/add"/>
+
+        <!--
         <Button
             android:id="@+id/button2"
             android:layout_width="359dp"
@@ -51,16 +82,18 @@
             android:background="#79E8F6"
             android:gravity="start"
             android:text="Habits" />
+        -->
 
+        <!-- ToDo: switch back to this button eventually, hard to work with right now
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/addHabitBTN"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
             app:backgroundTint="#FFFFFF"
-            app:srcCompat="@android:drawable/ic_input_add" />
-
-    </FrameLayout>
+            app:srcCompat="@android:drawable/ic_input_add"
+            android:layout_alignParentEnd="true"/>
+            -->
+    </RelativeLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
