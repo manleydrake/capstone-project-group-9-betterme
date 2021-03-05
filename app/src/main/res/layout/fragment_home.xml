@@ -4,137 +4,123 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="@color/white">
 
-    <Button
-        android:id="@+id/symptoms2"
-        android:layout_width="359dp"
-        android:layout_height="84dp"
-        android:layout_below="@+id/currentMonth"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_centerInParent="true"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="251dp"
-        android:background="#79E8F6"
-        android:gravity="left"
-        android:text="Notes" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/addHabitBTN3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="446dp"
-        android:layout_marginEnd="14dp"
-        android:layout_marginRight="14dp"
-        android:clickable="true"
-        app:backgroundTint="#FFFFFF"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/dayLabel">
 
-    <Button
-        android:id="@+id/symptoms"
-        android:layout_width="359dp"
-        android:layout_height="84dp"
-        android:layout_below="@+id/currentMonth"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_centerInParent="true"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="133dp"
-        android:background="#79E8F6"
-        android:gravity="left"
-        android:text="Symptoms" />
+            <!-- ToDo: Need to change the arrows to be buttons on either side of the date
+            textView that when clicked update the string used for the text -->
+            <TextView
+                android:id="@+id/displayMonth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:text="@string/homeMonth"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/addHabitBTN2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="330dp"
-        android:layout_marginEnd="13dp"
-        android:layout_marginRight="13dp"
-        android:clickable="true"
-        app:backgroundTint="#FFFFFF"
-        app:srcCompat="@android:drawable/ic_input_add" />
+            <TextView
+                android:id="@+id/displayDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/displayMonth"
+                android:text="@string/dayOfMonth"
+                android:textStyle="bold" />
+        </RelativeLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginStart="100dp"
-        android:layout_marginLeft="100dp"
-        android:layout_marginEnd="100dp"
-        android:layout_marginRight="100dp"
-        android:ems="10"
-        android:inputType="text"
-        android:text="@string/homeTitle"
-        android:gravity="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/habitSection"
+            android:layout_below="@+id/dayLabel">
 
-    <TextView
-        android:id="@+id/currentMonth"
-        android:layout_width="309dp"
-        android:layout_height="130dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="78dp"
-        android:drawableStart="@drawable/ic_baseline_arrow_back_24"
-        android:drawableLeft="@drawable/ic_baseline_arrow_back_24"
-        android:drawableEnd="@drawable/ic_baseline_arrow_forward_24"
-        android:drawableRight="@drawable/ic_baseline_arrow_forward_24"
-        android:gravity="center"
-        android:text="@string/homeMonth"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display2"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+            <!--Change from button to be another frame layout that will hold the list
+            then can make the background color of the frame layout whatever color we want-->
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="359dp"
+                android:layout_height="84dp"
+                android:layout_marginStart="33dp"
+                android:layout_marginLeft="33dp"
+                android:layout_marginTop="22dp"
+                android:background="#79E8F6"
+                android:gravity="start"
+                android:text="Habits" />
 
-    <TextView
-        android:id="@+id/homeDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="161dp"
-        android:text="@string/dayOfMonth"
-        android:textStyle="bold" />
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/addHabitBTN"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                app:backgroundTint="#FFFFFF"
+                app:srcCompat="@android:drawable/ic_input_add" />
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="359dp"
-        android:layout_height="84dp"
-        android:layout_below="@+id/currentMonth"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="33dp"
-        android:layout_marginLeft="33dp"
-        android:layout_marginTop="22dp"
-        android:background="#79E8F6"
-        android:gravity="left"
-        android:text="Habits" />
+        </FrameLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/addHabitBTN"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="213dp"
-        android:layout_marginEnd="13dp"
-        android:layout_marginRight="13dp"
-        android:clickable="true"
-        app:backgroundTint="#FFFFFF"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/symptomSection"
+            android:layout_below="@+id/habitSection">
 
+            <!-- ToDo: change from a button to a frame layout or another layout that
+            can hold a list of text values or anything else -->
+            <Button
+                android:id="@+id/symptoms"
+                android:layout_width="359dp"
+                android:layout_height="84dp"
+                android:layout_marginStart="33dp"
+                android:layout_marginLeft="33dp"
+                android:layout_marginTop="22dp"
+                android:background="#79E8F6"
+                android:gravity="start"
+                android:text="Symptoms" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/addSymptom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                app:backgroundTint="#FFFFFF"
+                app:srcCompat="@android:drawable/ic_input_add" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/noteSection"
+            android:layout_below="@+id/symptomSection">
+
+            <!-- ToDo: this should not be a button, change to a frame layout or another layout
+    that can hold a list of text values or anything else-->
+            <Button
+                android:id="@+id/notesList"
+                android:layout_width="359dp"
+                android:layout_height="84dp"
+                android:layout_marginStart="33dp"
+                android:layout_marginLeft="33dp"
+                android:layout_marginTop="22dp"
+                android:background="#79E8F6"
+                android:gravity="start"
+                android:text="Notes" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/addNote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                app:backgroundTint="#FFFFFF"
+                app:srcCompat="@android:drawable/ic_input_add" />
+
+        </FrameLayout>
+
+    </ScrollView>
 </RelativeLayout>
