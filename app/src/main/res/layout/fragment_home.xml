@@ -103,46 +103,65 @@
             -->
     </RelativeLayout>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+
+    <RelativeLayout
         android:id="@+id/symptomSection"
-        android:layout_below="@+id/habitSection">
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_below="@+id/habitSection"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="39dp"
+        android:background="#79E8F6">
 
-        <!-- ToDo: change from a button to a frame layout or another layout that
-        can hold a list of text values or anything else -->
-        <Button
-            android:id="@+id/symptoms"
-            android:layout_width="359dp"
-            android:layout_height="84dp"
-            android:layout_marginStart="33dp"
-            android:layout_marginLeft="33dp"
-            android:layout_marginTop="22dp"
-            android:background="#79E8F6"
-            android:gravity="start"
-            android:text="Symptoms" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/addSymptom"
+        <!--Change from button to be another frame layout that will hold the list
+        then can make the background color of the frame layout whatever color we want
+        source: https://www.sitepoint.com/starting-android-development-creating-todo-app/-->
+        <TextView
+            android:id="@+id/symptom_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            app:backgroundTint="#FFFFFF"
-            app:srcCompat="@android:drawable/ic_input_add" />
+            android:text="Symptoms"></TextView>
 
-    </FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/symptom_label">
+
+            <ListView
+                android:id="@+id/symptom_list"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:scrollbarSize="3dp"
+                android:scrollbarStyle="outsideOverlay"
+                android:scrollbars="vertical"
+                android:scrollingCache="true"
+                android:smoothScrollbar="true" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/add_symptom_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:backgroundTint="@color/white"
+            android:text="@string/add" />
+
+    </RelativeLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/noteSection"
         android:layout_below="@+id/symptomSection">
 
         <!-- ToDo: this should not be a button, change to a frame layout or another layout
 that can hold a list of text values or anything else-->
+
         <Button
             android:id="@+id/notesList"
-            android:layout_width="359dp"
+            android:layout_width="352dp"
             android:layout_height="84dp"
             android:layout_marginStart="33dp"
             android:layout_marginLeft="33dp"
