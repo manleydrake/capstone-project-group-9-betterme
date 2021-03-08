@@ -75,6 +75,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         .setNegativeButton("Cancel", null)
                         .create();
                 dialog.show();
+                break;
             case R.id.add_symptom_button:
                 Log.d("HomeFragment", "Add a new symptom");
                 final EditText symptomEditText = new EditText(this.getContext());
@@ -94,7 +95,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         .setNegativeButton("Cancel", null)
                         .create();
                 dialog2.show();
-             //ToDo: add case here for if an add symptom button is clicked
+                break;
 
             //ToDo: add case here for if an add note button is clicked
         }
