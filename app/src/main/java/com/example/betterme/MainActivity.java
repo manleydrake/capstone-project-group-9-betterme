@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         case R.id.nav_symptoms:
                             selectedFragment = new SymptomsFragment();
+                            break;
                         case R.id.nav_history:
                             selectedFragment = new HistoryFragment();
                             break;
