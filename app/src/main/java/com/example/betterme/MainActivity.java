@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                new HomeFragment()).commit();
+                new HabitsFragment()).commit();
 
     }
 
@@ -32,9 +32,11 @@ public class MainActivity extends AppCompatActivity {
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                     Fragment selectedFragment = null;
                     switch (menuItem.getItemId()){
-                        case R.id.nav_home:
-                            selectedFragment = new HomeFragment();
+                        case R.id.nav_habits:
+                            selectedFragment = new HabitsFragment();
                             break;
+                        case R.id.nav_symptoms:
+                            selectedFragment = new SymptomsFragment();
                         case R.id.nav_history:
                             selectedFragment = new HistoryFragment();
                             break;
