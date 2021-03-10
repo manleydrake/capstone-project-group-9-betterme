@@ -9,4 +9,6 @@
     <string name="add">Add</string>
     <string name="habits">Habits</string>
     <string name="symptoms">Symptoms</string>
+    <string name="newHabit">New Habit</string>
+    <string name="save">Save</string>
 </resources>
