@@ -16,7 +16,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public static final String TAG = "Database";
 
-    private static final int VERSION = 1;
+    private static final int VERSION = 5;
     private static final String NAME = "habitDB";  //Database name
 
     //User Table variables
@@ -26,27 +26,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String userPassword = "password";
     //Creates table
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + USER_TABLE + "(" + userID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                                            + userName + "TEXT, " + userPassword + " TEXT)";
+                                            + userName + " TEXT, " + userPassword + " TEXT)";
 
     //Habit table variables
     private static final String HABIT_TABLE = "habitTable";
-    private static final String habitID = "habitID";
-    private static final String habitName = "habitName";
+    private static final String HABITID = "habitID";
+    private static final String HABITNAME = "habitName";
     private static final String habitStartDate = "habitStart";
     private static final String habitEndDate = "habitEnd";
 
     //Create habit table
-    private static final String CREATE_HABIT_TABLE = "CREATE TABLE " + HABIT_TABLE + "(" + habitID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + userID + "INTEGER" + habitName + "TEXT, " + habitStartDate + "TEXT, " + habitEndDate + "TEXT)";
+    private static final String CREATE_HABIT_TABLE = "CREATE TABLE " + HABIT_TABLE + "(" + HABITID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + userID + " INTEGER, " + HABITNAME + " TEXT, " + habitStartDate + " TEXT, " + habitEndDate + " TEXT)";
 
     //Habit Tracking Table variables
     private static final String HABIT_TRACKING_TABLE = "habit_tracking";
-    private static final String habitTrackDate = "habitTrackDate";
-    private static final String isComplete = "habitStatus";
+    private static final String HABITTRACKDATE = "habitTrackDate";
+    private static final String ISCOMPLETE = "habitStatus";
 
     //Create habit tracking table
-    private static final String CREATE_HABIT_TRACKING_TABLE = "CREATE TABLE " + HABIT_TRACKING_TABLE + "(" + habitID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + habitName + "TEXT, " + habitTrackDate + "TEXT, " + isComplete + " TEXT)";
+    private static final String CREATE_HABIT_TRACKING_TABLE = "CREATE TABLE " + HABIT_TRACKING_TABLE + "(" + HABITID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + HABITNAME + " TEXT, " + HABITTRACKDATE + " TEXT, " + ISCOMPLETE + " INTEGER)";
 
     //Symptom Table variables
     private static final String SYMPTOM_TABLE = "symptomTable";
@@ -57,7 +57,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Create symptom table
     private static final String CREATE_SYMPTOM_TABLE = "CREATE TABLE " + SYMPTOM_TABLE + "(" + symptomID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + userID + "INTEGER" + symptomName + "TEXT, " + symptomStartDate + "TEXT, " + symptomEndDate + " TEXT)";
+            + userID + " INTEGER, " + symptomName + " TEXT, " + symptomStartDate + " TEXT, " + symptomEndDate + " TEXT)";
 
     //Symptom tracking table variables
     private static final String SYMPTOM_TRACKING_TABLE = "symptomTracking";
@@ -65,8 +65,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String symptomRating = "symptomRating";
 
     //Create symptom tracking table variables
-    private static final String CREATE_SYMPTOM_TRACKING_TABLE = "CREATE TABLE " + SYMPTOM_TRACKING_TABLE + "(" + habitID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + symptomTrackDate + "TEXT, " + symptomRating + " TEXT)";
+    private static final String CREATE_SYMPTOM_TRACKING_TABLE = "CREATE TABLE " + SYMPTOM_TRACKING_TABLE + "(" + HABITID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + symptomTrackDate + " TEXT, " + symptomRating + " INTEGER)";
 
 
     private SQLiteDatabase db;
@@ -86,6 +86,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.d(TAG, "Dropping old tables");
         //Drops older tables
         db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + HABIT_TABLE);
@@ -103,8 +104,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public void insertHabit(HabitModel habit) {
         ContentValues cv = new ContentValues();
-        cv.put(habitName, habit.getHabit());
-        cv.put(isComplete, 0);
+        cv.put(HABITNAME, habit.getHabit());
+        cv.put(ISCOMPLETE, 0);
+        Log.d(TAG, "passing " + HABITNAME);
+        Log.d(TAG, "passing " + ISCOMPLETE);
+        Log.d(TAG, "cv is " + cv);
         db.insert(HABIT_TRACKING_TABLE, null, cv);
         Log.d(TAG, "database insertion successful" );
     }
@@ -118,9 +122,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 if(cur.moveToFirst()){
                     do{
                         HabitModel habit = new HabitModel();
-                        habit.setId(cur.getInt(cur.getColumnIndex(habitID)));
-                        habit.setHabit(cur.getString(cur.getColumnIndex(habitName)));
-                        habit.setStatus(cur.getInt(cur.getColumnIndex(isComplete)));
+                        habit.setId(cur.getInt(cur.getColumnIndex(HABITID)));
+                        habit.setHabit(cur.getString(cur.getColumnIndex(HABITNAME)));
+                        habit.setStatus(cur.getInt(cur.getColumnIndex(ISCOMPLETE)));
                         habitList.add(habit);
                     }
                     while(cur.moveToNext());
@@ -137,17 +141,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public void updateHabitStatus(int id, int status){
         ContentValues cv = new ContentValues();
-        cv.put(isComplete, status);
-        db.update(HABIT_TRACKING_TABLE, cv, habitID + "= ?", new String[] {String.valueOf(id)});
+        cv.put(ISCOMPLETE, status);
+        db.update(HABIT_TRACKING_TABLE, cv, HABITID + "= ?", new String[] {String.valueOf(id)});
     }
 
     public void updateHabit(int id, String habit) {
         ContentValues cv = new ContentValues();
-        cv.put(habitName, habit);
-        db.update(HABIT_TRACKING_TABLE, cv, habitID + "= ?", new String[] {String.valueOf(id)});
+        cv.put(HABITNAME, habit);
+        db.update(HABIT_TRACKING_TABLE, cv, HABITID + "= ?", new String[] {String.valueOf(id)});
     }
 
     public void deleteHabit(int id){
-        db.delete(HABIT_TABLE, habitID + "= ?", new String[] {String.valueOf(id)});
+        db.delete(HABIT_TABLE, HABITID + "= ?", new String[] {String.valueOf(id)});
     }
 }
