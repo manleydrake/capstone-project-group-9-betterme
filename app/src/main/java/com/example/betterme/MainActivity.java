@@ -9,14 +9,38 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.betterme.Adapter.SymptomAdapter;
+import com.example.betterme.Model.SymptomModel;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private RecyclerView symptomsRecyclerView;
+    private SymptomAdapter symAdapter;
+
+    private List<SymptomModel> symList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+       symAdapter = new SymptomAdapter(this);
+       symptomsRecyclerView.setAdapter(symAdapter);
+
+       SymptomModel sym = new SymptomModel();
+       sym.setSymptom("This is a new symptom");
+       sym.setStatus(0);
+       sym.setId(1);
+
+//This is an example list
+       symList.add(sym);
+       symList.add(sym);
+       symAdapter.setSymptoms(symList);
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
