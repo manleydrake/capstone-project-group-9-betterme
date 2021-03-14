@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /**
        symAdapter = new SymptomAdapter(this);
        symptomsRecyclerView.setAdapter(symAdapter);
 
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 //This is an example list
        symList.add(sym);
        symList.add(sym);
-       symAdapter.setSymptoms(symList);
+       symAdapter.setSymptoms(symList);**/
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
