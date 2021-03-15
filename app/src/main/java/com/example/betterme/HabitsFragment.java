@@ -51,17 +51,16 @@ public class HabitsFragment extends Fragment implements DialogCloseListener {
 
         habitAddButton = v.findViewById(R.id.newHabitButton);
 
-        //ToDo: check if this works with getFragmentManager instead of getSupportFragmentManager
+        habitList = db.getAllHabits();
+        Collections.reverse(habitList);
+        habitsAdapter.setHabits(habitList);
+
         habitAddButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 AddNewHabit.newInstance().show(getFragmentManager(), AddNewHabit.TAG);
             }
         });
-
-        habitList = db.getAllHabits();
-        Collections.reverse(habitList);
-        habitsAdapter.setHabits(habitList);
 
 
         /**define some dummy data for now

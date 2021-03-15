@@ -21,52 +21,52 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     //User Table variables
     private static final String USER_TABLE = "user";
-    private static final String userID = "userID";
-    private static final String userName = "username";
-    private static final String userPassword = "password";
+    private static final String USER_ID = "userID";
+    private static final String USERNAME = "username";
+    private static final String USER_PASSWORD = "password";
     //Creates table
-    private static final String CREATE_USER_TABLE = "CREATE TABLE " + USER_TABLE + "(" + userID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                                            + userName + " TEXT, " + userPassword + " TEXT)";
+    private static final String CREATE_USER_TABLE = "CREATE TABLE " + USER_TABLE + "(" + USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                            + USERNAME + " TEXT, " + USER_PASSWORD + " TEXT)";
 
     //Habit table variables
     private static final String HABIT_TABLE = "habitTable";
-    private static final String HABITID = "habitID";
-    private static final String HABITNAME = "habitName";
-    private static final String habitStartDate = "habitStart";
-    private static final String habitEndDate = "habitEnd";
+    private static final String HABIT_ID = "habitID";
+    private static final String HABIT_NAME = "habitName";
+    private static final String HABIT_START_DATE = "habitStart";
+    private static final String HABIT_END_DATE = "habitEnd";
 
     //Create habit table
-    private static final String CREATE_HABIT_TABLE = "CREATE TABLE " + HABIT_TABLE + "(" + HABITID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + userID + " INTEGER, " + HABITNAME + " TEXT, " + habitStartDate + " TEXT, " + habitEndDate + " TEXT)";
+    private static final String CREATE_HABIT_TABLE = "CREATE TABLE " + HABIT_TABLE + "(" + HABIT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + USER_ID + " INTEGER, " + HABIT_NAME + " TEXT, " + HABIT_START_DATE + " TEXT, " + HABIT_END_DATE + " TEXT)";
 
     //Habit Tracking Table variables
     private static final String HABIT_TRACKING_TABLE = "habit_tracking";
-    private static final String HABITTRACKDATE = "habitTrackDate";
-    private static final String ISCOMPLETE = "habitStatus";
+    private static final String HABIT_TRACK_DATE = "habitTrackDate";
+    private static final String HABIT_COMPLETE = "habitStatus";
 
     //Create habit tracking table
-    private static final String CREATE_HABIT_TRACKING_TABLE = "CREATE TABLE " + HABIT_TRACKING_TABLE + "(" + HABITID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + HABITNAME + " TEXT, " + HABITTRACKDATE + " TEXT, " + ISCOMPLETE + " INTEGER)";
+    private static final String CREATE_HABIT_TRACKING_TABLE = "CREATE TABLE " + HABIT_TRACKING_TABLE + "(" + HABIT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + HABIT_NAME + " TEXT, " + HABIT_TRACK_DATE + " TEXT, " + HABIT_COMPLETE + " INTEGER)";
 
     //Symptom Table variables
     private static final String SYMPTOM_TABLE = "symptomTable";
-    private static final String symptomID = "symptomID";
-    private static final String symptomName = "symptomName";
-    private static final String symptomStartDate = "symptomStart";
-    private static final String symptomEndDate = "symptomEnd";
+    private static final String SYMPTOM_ID = "symptomID";
+    private static final String SYMPTOM_NAME = "symptomName";
+    private static final String SYMPTOM_START_DATE = "symptomStart";
+    private static final String SYMPTOM_END_DATE = "symptomEnd";
 
     // Create symptom table
-    private static final String CREATE_SYMPTOM_TABLE = "CREATE TABLE " + SYMPTOM_TABLE + "(" + symptomID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + userID + " INTEGER, " + symptomName + " TEXT, " + symptomStartDate + " TEXT, " + symptomEndDate + " TEXT)";
+    private static final String CREATE_SYMPTOM_TABLE = "CREATE TABLE " + SYMPTOM_TABLE + "(" + SYMPTOM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + USER_ID + " INTEGER, " + SYMPTOM_NAME + " TEXT, " + SYMPTOM_START_DATE + " TEXT, " + SYMPTOM_END_DATE + " TEXT)";
 
     //Symptom tracking table variables
     private static final String SYMPTOM_TRACKING_TABLE = "symptomTracking";
-    private static final String symptomTrackDate = "symptomTrackDate";
-    private static final String symptomRating = "symptomRating";
+    private static final String SYMPTOM_TRACK_DATE = "symptomTrackDate";
+    private static final String SYMPTOM_RATING = "symptomRating";
 
     //Create symptom tracking table variables
-    private static final String CREATE_SYMPTOM_TRACKING_TABLE = "CREATE TABLE " + SYMPTOM_TRACKING_TABLE + "(" + HABITID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + symptomTrackDate + " TEXT, " + symptomRating + " INTEGER)";
+    private static final String CREATE_SYMPTOM_TRACKING_TABLE = "CREATE TABLE " + SYMPTOM_TRACKING_TABLE + "(" + SYMPTOM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + SYMPTOM_TRACK_DATE + " TEXT, " + SYMPTOM_RATING + " INTEGER)";
 
 
     private SQLiteDatabase db;
@@ -104,10 +104,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public void insertHabit(HabitModel habit) {
         ContentValues cv = new ContentValues();
-        cv.put(HABITNAME, habit.getHabit());
-        cv.put(ISCOMPLETE, 0);
-        Log.d(TAG, "passing " + HABITNAME);
-        Log.d(TAG, "passing " + ISCOMPLETE);
+        cv.put(HABIT_NAME, habit.getHabit());
+        cv.put(HABIT_COMPLETE, 0);
+        Log.d(TAG, "passing " + HABIT_NAME);
+        Log.d(TAG, "passing " + HABIT_COMPLETE);
         Log.d(TAG, "cv is " + cv);
         db.insert(HABIT_TRACKING_TABLE, null, cv);
         Log.d(TAG, "database insertion successful" );
@@ -122,9 +122,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 if(cur.moveToFirst()){
                     do{
                         HabitModel habit = new HabitModel();
-                        habit.setId(cur.getInt(cur.getColumnIndex(HABITID)));
-                        habit.setHabit(cur.getString(cur.getColumnIndex(HABITNAME)));
-                        habit.setStatus(cur.getInt(cur.getColumnIndex(ISCOMPLETE)));
+                        habit.setId(cur.getInt(cur.getColumnIndex(HABIT_ID)));
+                        habit.setHabit(cur.getString(cur.getColumnIndex(HABIT_NAME)));
+                        habit.setStatus(cur.getInt(cur.getColumnIndex(HABIT_COMPLETE)));
                         habitList.add(habit);
                     }
                     while(cur.moveToNext());
@@ -141,17 +141,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public void updateHabitStatus(int id, int status){
         ContentValues cv = new ContentValues();
-        cv.put(ISCOMPLETE, status);
-        db.update(HABIT_TRACKING_TABLE, cv, HABITID + "= ?", new String[] {String.valueOf(id)});
+        cv.put(HABIT_COMPLETE, status);
+        db.update(HABIT_TRACKING_TABLE, cv, HABIT_ID + "= ?", new String[] {String.valueOf(id)});
     }
 
     public void updateHabit(int id, String habit) {
         ContentValues cv = new ContentValues();
-        cv.put(HABITNAME, habit);
-        db.update(HABIT_TRACKING_TABLE, cv, HABITID + "= ?", new String[] {String.valueOf(id)});
+        cv.put(HABIT_NAME, habit);
+        db.update(HABIT_TRACKING_TABLE, cv, HABIT_ID + "= ?", new String[] {String.valueOf(id)});
     }
 
     public void deleteHabit(int id){
-        db.delete(HABIT_TABLE, HABITID + "= ?", new String[] {String.valueOf(id)});
+        db.delete(HABIT_TABLE, HABIT_ID + "= ?", new String[] {String.valueOf(id)});
     }
 }
