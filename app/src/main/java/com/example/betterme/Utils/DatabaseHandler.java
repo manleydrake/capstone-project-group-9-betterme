@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.example.betterme.Model.HabitModel;
+import com.example.betterme.Model.SymptomModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,6 +113,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.insert(HABIT_TRACKING_TABLE, null, cv);
         Log.d(TAG, "database insertion successful" );
     }
+
+    public void insertSymptom(SymptomModel symptom) {
+        ContentValues cv = new ContentValues();
+        cv.put(SYMPTOM_NAME, symptom.getSymptom());
+        cv.put(SYMPTOM_RATING, 0);
+        Log.d(TAG, "passing " + SYMPTOM_NAME);
+        Log.d(TAG, "passing " + SYMPTOM_RATING);
+        Log.d(TAG, "cv is " + cv);
+        db.insert(SYMPTOM_TRACKING_TABLE, null, cv);
+        Log.d(TAG, "database insertion successful" );
+
+    }
     public List<HabitModel> getAllHabits(){
         List<HabitModel> habitList = new ArrayList<>();
         Cursor cur = null;
@@ -139,10 +152,41 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return habitList;
     }
 
+    public List<SymptomModel> getAllSymptoms() {
+        List<SymptomModel> symptomList = new ArrayList<>();
+        Cursor cur = null;
+        db.beginTransaction();
+        try {
+            cur = db.query(HABIT_TRACKING_TABLE, null, null, null, null, null, null, null);
+            if (cur != null) {
+                if (cur.moveToFirst()) {
+                    do {
+                        SymptomModel symptom = new SymptomModel();
+                        symptom.setId(cur.getInt(cur.getColumnIndex(SYMPTOM_ID)));
+                        symptom.setSymptom(cur.getString(cur.getColumnIndex(SYMPTOM_NAME)));
+                        symptom.setRating(cur.getInt(cur.getColumnIndex(SYMPTOM_RATING)));
+                        symptomList.add(symptom);
+                    }
+                    while (cur.moveToNext());
+                }
+            }
+        } finally {
+            db.endTransaction();
+            assert cur != null;
+            cur.close();
+        }
+        return symptomList;
+    }
     public void updateHabitStatus(int id, int status){
         ContentValues cv = new ContentValues();
         cv.put(HABIT_COMPLETE, status);
         db.update(HABIT_TRACKING_TABLE, cv, HABIT_ID + "= ?", new String[] {String.valueOf(id)});
+    }
+
+    public void updateSymptomRating(int id, int rating) {
+        ContentValues cv = new ContentValues();
+        cv.put(SYMPTOM_RATING, rating);
+        db.update(SYMPTOM_TRACKING_TABLE, cv, SYMPTOM_ID + "= ?", new String[] {String.valueOf(id)});
     }
 
     public void updateHabit(int id, String habit) {
@@ -151,7 +195,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.update(HABIT_TRACKING_TABLE, cv, HABIT_ID + "= ?", new String[] {String.valueOf(id)});
     }
 
+    public void updateSymptom(int id, String symptom) {
+        ContentValues cv = new ContentValues();
+        cv.put(SYMPTOM_NAME, symptom);
+        db.update(SYMPTOM_TRACKING_TABLE, cv, SYMPTOM_ID + "= ?", new String[] {String.valueOf(id)});
+    }
+
     public void deleteHabit(int id){
         db.delete(HABIT_TABLE, HABIT_ID + "= ?", new String[] {String.valueOf(id)});
+    }
+
+    public void deleteSymptom(int id) {
+        db.delete(SYMPTOM_TABLE, SYMPTOM_ID + "= ?", new String[] {String.valueOf(id)});
     }
 }

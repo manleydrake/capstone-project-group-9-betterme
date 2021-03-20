@@ -1,7 +1,7 @@
 package com.example.betterme.Model;
 
 public class SymptomModel {
-    private int id, status;
+    private int id, status, rating;
     private String symptom;
 
     public int getId() {
@@ -26,5 +26,9 @@ public class SymptomModel {
 
     public void setSymptom(String symptom) {
         this.symptom = symptom;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
     }
 }
