@@ -23,7 +23,7 @@ import java.util.List;
 public class HabitsFragment extends Fragment implements DialogCloseListener {
 
     //define variables
-    private RecyclerView habitsRecyclerView;
+    public static RecyclerView habitsRecyclerView;
     private HabitAdapter habitsAdapter;
 
     private List<HabitModel> habitList;

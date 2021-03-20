@@ -15,10 +15,16 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.betterme.Adapter.HabitAdapter;
 import com.example.betterme.Model.HabitModel;
 import com.example.betterme.Utils.DatabaseHandler;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class AddNewHabit extends BottomSheetDialogFragment {
 
@@ -28,6 +34,9 @@ public class AddNewHabit extends BottomSheetDialogFragment {
     private EditText newHabitText;
     private Button newHabitSaveButton;
     private DatabaseHandler db;
+    private List<HabitModel> habitList;
+    private HabitAdapter habitsAdapter;
+    public static RecyclerView habitsRecyclerView = HabitsFragment.habitsRecyclerView;
 
     public static AddNewHabit newInstance(){
         return new AddNewHabit();
@@ -43,6 +52,8 @@ public class AddNewHabit extends BottomSheetDialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_new_habit, container, false);
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        habitList = new ArrayList<>();
+        habitsAdapter = new HabitAdapter(db, (MainActivity) this.getActivity());
         return view;
     }
 
@@ -114,6 +125,7 @@ public class AddNewHabit extends BottomSheetDialogFragment {
                     habit.setHabit(text);
                     habit.setStatus(0);
                     db.insertHabit(habit);
+                    updateHabits();
                 }
                 dismiss();
             }
@@ -128,5 +140,14 @@ public class AddNewHabit extends BottomSheetDialogFragment {
         if(activity instanceof DialogCloseListener){
             ((DialogCloseListener)activity).handleDialogClose(dialog);
         }
+    }
+
+    public void updateHabits(){
+        habitsAdapter = new HabitAdapter(db, (MainActivity) this.getActivity());
+        habitsRecyclerView.setAdapter(habitsAdapter);
+        habitList = db.getAllHabits();
+        Collections.reverse(habitList);
+        habitsAdapter.setHabits(habitList);
+        habitsAdapter.notifyDataSetChanged();
     }
 }
