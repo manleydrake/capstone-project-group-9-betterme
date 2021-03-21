@@ -17,7 +17,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public static final String TAG = "Database";
 
-    private static final int VERSION = 5;
+    private static final int VERSION = 8;
     private static final String NAME = "habitDB";  //Database name
 
     //User Table variables
@@ -67,7 +67,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     //Create symptom tracking table variables
     private static final String CREATE_SYMPTOM_TRACKING_TABLE = "CREATE TABLE " + SYMPTOM_TRACKING_TABLE + "(" + SYMPTOM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + SYMPTOM_TRACK_DATE + " TEXT, " + SYMPTOM_RATING + " INTEGER)";
+            + SYMPTOM_NAME + " TEXT, " + SYMPTOM_TRACK_DATE + " TEXT, " + SYMPTOM_RATING + " INTEGER)";
 
 
     private SQLiteDatabase db;
@@ -157,7 +157,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cur = null;
         db.beginTransaction();
         try {
-            cur = db.query(HABIT_TRACKING_TABLE, null, null, null, null, null, null, null);
+            cur = db.query(SYMPTOM_TRACKING_TABLE, null, null, null, null, null, null, null);
             if (cur != null) {
                 if (cur.moveToFirst()) {
                     do {

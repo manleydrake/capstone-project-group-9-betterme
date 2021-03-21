@@ -21,6 +21,7 @@ import com.example.betterme.Model.SymptomModel;
 import com.example.betterme.Utils.DatabaseHandler;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,11 +30,11 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
 
     public static final String TAG = "ActionBottomDialog";
 
-    private EditText newSymtpomText;
-    private Button newSymtpomSaveButton;
+    private EditText newSymptomText;
+    private Button newSymptomSaveButton;
     private DatabaseHandler db;
     private List<SymptomModel> symptomList;
-    private SymptomAdapter symtpomsAdapter;
+    private SymptomAdapter symptomsAdapter;
     public static RecyclerView symptomsRecyclerView = SymptomsFragment.symptomsRecyclerView;
 
     public static AddNewSymptom newInstance(){
@@ -50,14 +51,16 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_new_symptom, container, false);
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        symptomList = new ArrayList<>();
+        symptomsAdapter = new SymptomAdapter(db, (MainActivity) this.getActivity());
         return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
-        newSymtpomText = getView().findViewById(R.id.newSymptomText);
-        newSymtpomSaveButton = getView().findViewById(R.id.newSymptomButton);
+        newSymptomText = getView().findViewById(R.id.newSymptomText);
+        newSymptomSaveButton = getView().findViewById(R.id.newSymptomSave);
 
         db = new DatabaseHandler(getActivity());
         db.openDatabase();
@@ -70,34 +73,36 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
         if(bundle != null){
             isUpdate = true;
             String symptom = bundle.getString("symptomName");
-            newSymtpomText.setText(symptom);
+            newSymptomText.setText(symptom);
+            assert symptom != null;
             //>0 then text exists and we want to save to be valid
             if(symptom.length()>0){
                 //ToDo: change color to be theme
-                newSymtpomSaveButton.setTextColor(ContextCompat.getColor(getContext(), R.color.LightBlue));
+                newSymptomSaveButton.setTextColor(ContextCompat.getColor(getContext(), R.color.LightBlue));
             }
 
         }
-    newSymtpomText.addTextChangedListener(new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-        }
+        newSymptomText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            //check if the habit is empty or not
-            //do not enable button if it is empty
-            if(s.toString().equals("")){
-                newSymtpomSaveButton.setEnabled(false);
-                newSymtpomSaveButton.setTextColor(Color.GRAY);
-            }
-            else{
-                newSymtpomSaveButton.setEnabled(true);
-                newSymtpomSaveButton.setTextColor(ContextCompat.getColor(getContext(), R.color.LightBlue));
             }
 
-        }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //check if the symptom is empty or not
+                //do not enable button if it is empty
+                if(s.toString().equals("")){
+                    newSymptomSaveButton.setEnabled(false);
+                    newSymptomSaveButton.setTextColor(Color.GRAY);
+                }
+                else{
+                    newSymptomSaveButton.setEnabled(true);
+                    newSymptomSaveButton.setTextColor(ContextCompat.getColor(getContext(), R.color.LightBlue));
+                }
+
+            }
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -106,11 +111,11 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
     });
 
     boolean finalIsUpdate = isUpdate;
-    newSymtpomSaveButton.setOnClickListener(new View.OnClickListener() {
+    newSymptomSaveButton.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             //check if we are trying to update and existing symptom or enter a new one
-            String text = newSymtpomText.getText().toString();
+            String text = newSymptomText.getText().toString();
             if(finalIsUpdate){
                 db.updateSymptom(bundle.getInt("symptomID"), text);
             }
@@ -135,11 +140,11 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
     }
 
     public void updateSymptoms(){
-        symtpomsAdapter = new SymptomAdapter(db, (MainActivity) this.getActivity());
-        symptomsRecyclerView.setAdapter(symtpomsAdapter);
+        symptomsAdapter = new SymptomAdapter(db, (MainActivity) this.getActivity());
+        symptomsRecyclerView.setAdapter(symptomsAdapter);
         symptomList = db.getAllSymptoms();
         Collections.reverse(symptomList);
-        symtpomsAdapter.setSymptoms(symptomList);
-        symtpomsAdapter.notifyDataSetChanged();
+        symptomsAdapter.setSymptoms(symptomList);
+        symptomsAdapter.notifyDataSetChanged();
     }
 }
