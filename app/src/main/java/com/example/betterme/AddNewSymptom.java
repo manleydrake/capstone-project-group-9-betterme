@@ -16,7 +16,6 @@ import android.widget.EditText;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.betterme.Adapter.HabitAdapter;
 import com.example.betterme.Adapter.SymptomAdapter;
 import com.example.betterme.Model.SymptomModel;
 import com.example.betterme.Utils.DatabaseHandler;
@@ -44,7 +43,7 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(STYLE_NORMAL, R.style.DialogStyle)
+        setStyle(STYLE_NORMAL, R.style.DialogStyle);
     }
 
     @Override
