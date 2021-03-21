@@ -17,11 +17,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView symptomsRecyclerView;
-    private SymptomAdapter symAdapter;
-
-    private List<SymptomModel> symList;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
