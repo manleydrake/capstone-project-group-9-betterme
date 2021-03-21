@@ -56,7 +56,7 @@ public class SymptomAdapter extends RecyclerView.Adapter<SymptomAdapter.ViewHold
         SymptomModel symptom = symptomList.get(position);
         symptomsText.setText(symptom.getSymptom());
 
-        holder.symptom.setValue((float) holder.symptom.getValue());
+        holder.symptom.setValue((float) symptom.getRating());
         holder.symptom.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
             @Override
             public void onStartTrackingTouch(Slider slider) {
