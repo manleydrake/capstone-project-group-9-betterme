@@ -1,8 +1,10 @@
 package com.example.betterme;
 
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,14 +12,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.betterme.Adapter.HabitAdapter;
 import com.example.betterme.Model.HabitModel;
 import com.example.betterme.Utils.DatabaseHandler;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class HabitsFragment extends Fragment implements DialogCloseListener {
@@ -31,12 +40,26 @@ public class HabitsFragment extends Fragment implements DialogCloseListener {
 
     private FloatingActionButton habitAddButton;
 
+    private TextView habitDateDisplay;
+    private ImageButton habitDatePrev;
+    private ImageButton habitDateNext;
 
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         ((MainActivity) getActivity()).setActionBarTitle("Habits");
         View v = inflater.inflate(R.layout.fragment_habits, container, false);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        Date date = new Date();
+
+        habitDateDisplay = v.findViewById(R.id.habitDateDisplay);
+        habitDateDisplay.setText(formatter.format(date));
+
+        habitDatePrev = v.findViewById(R.id.habitDatePrevious);
+        habitDateNext = v.findViewById(R.id.habitDateNext);
 
         db = new DatabaseHandler(this.getContext());
         db.openDatabase();
@@ -62,14 +85,35 @@ public class HabitsFragment extends Fragment implements DialogCloseListener {
             }
         });
 
+        habitDatePrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Date currDate = formatter.parse((String) habitDateDisplay.getText());
+                    LocalDateTime ldt = LocalDateTime.ofInstant(currDate.toInstant(), ZoneId.systemDefault()).minusDays(1);
+                    Date newDate = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+                    habitDateDisplay.setText(formatter.format(newDate));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
-        /**define some dummy data for now
-        HabitModel habit = new HabitModel();
-        habit.setHabit("This is our test habit");
-        habit.setStatus(0);
-        habit.setId(1);
-        habitList.add(habit);
-        habitsAdapter.setHabits(habitList);**/
+        habitDateNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Date currDate = formatter.parse((String) habitDateDisplay.getText());
+                    LocalDateTime ldt = LocalDateTime.ofInstant(currDate.toInstant(), ZoneId.systemDefault()).plusDays(1);
+                    Date newDate = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+                    habitDateDisplay.setText(formatter.format(newDate));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
 
         return v;
     }

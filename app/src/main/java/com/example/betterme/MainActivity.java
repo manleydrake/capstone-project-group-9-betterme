@@ -1,19 +1,12 @@
 package com.example.betterme;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.betterme.Adapter.SymptomAdapter;
-import com.example.betterme.Model.SymptomModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,20 +16,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //remove the header for now
         getSupportActionBar().hide();
-
-        /**
-       symAdapter = new SymptomAdapter(this);
-       symptomsRecyclerView.setAdapter(symAdapter);
-
-       SymptomModel sym = new SymptomModel();
-       sym.setSymptom("This is a new symptom");
-       sym.setStatus(0);
-       sym.setId(1);
-
-//This is an example list
-       symList.add(sym);
-       symList.add(sym);
-       symAdapter.setSymptoms(symList);**/
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);

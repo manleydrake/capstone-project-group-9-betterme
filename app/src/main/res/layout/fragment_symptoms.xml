@@ -17,11 +17,61 @@
         android:text="@string/symptoms"
         android:layout_marginLeft="16dp" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/symptomDateLayout"
+        android:layout_below="@id/symptomsText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/symptomDatePrevious"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/ic_baseline_arrow_back_24">
+
+            </ImageButton>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/symptomDateDisplay"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:textColor="@color/black"
+                android:text="MM/DD/YYYY">
+
+            </TextView>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/symptomDateNext"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_baseline_arrow_forward_24">
+
+            </ImageButton>
+
+        </RelativeLayout>
+
+
+
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/symptomsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/symptomsText"
+        android:layout_below="@id/symptomDateLayout"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:nestedScrollingEnabled="true" />
 
