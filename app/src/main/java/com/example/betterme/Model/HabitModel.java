@@ -3,6 +3,7 @@ package com.example.betterme.Model;
 public class HabitModel {
     private int id, status;
     private String habit;
+    private String habitTrackDate;
 
     public int getId() {
         return id;
@@ -18,6 +19,14 @@ public class HabitModel {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getHabitTrackDate(){
+        return habitTrackDate;
+    }
+
+    public void setHabitTrackDate(String habitTrackDate){
+        this.habitTrackDate = habitTrackDate;
     }
 
     public String getHabit() {

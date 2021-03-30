@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.betterme.Adapter.HabitAdapter;
 import com.example.betterme.Model.HabitModel;
+import com.example.betterme.Utils.DataHelper;
 import com.example.betterme.Utils.DatabaseHandler;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -37,6 +38,7 @@ public class AddNewHabit extends BottomSheetDialogFragment {
     private List<HabitModel> habitList;
     private HabitAdapter habitsAdapter;
     public static RecyclerView habitsRecyclerView = HabitsFragment.habitsRecyclerView;
+    public static DataHelper dataHelper = MainActivity.dataHelper;
 
     public static AddNewHabit newInstance(){
         return new AddNewHabit();
@@ -124,6 +126,7 @@ public class AddNewHabit extends BottomSheetDialogFragment {
                     HabitModel habit = new HabitModel();
                     habit.setHabit(text);
                     habit.setStatus(0);
+                    habit.setHabitTrackDate(dataHelper.getHabitCurrDate());
                     db.insertHabit(habit);
                     updateHabits();
                 }

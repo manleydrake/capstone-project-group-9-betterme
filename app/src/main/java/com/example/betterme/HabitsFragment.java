@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import com.example.betterme.Adapter.HabitAdapter;
 import com.example.betterme.Model.HabitModel;
+import com.example.betterme.Utils.DataHelper;
 import com.example.betterme.Utils.DatabaseHandler;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -44,6 +46,8 @@ public class HabitsFragment extends Fragment implements DialogCloseListener {
     private ImageButton habitDatePrev;
     private ImageButton habitDateNext;
 
+    public static DataHelper dataHelper = MainActivity.dataHelper;
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
@@ -57,6 +61,7 @@ public class HabitsFragment extends Fragment implements DialogCloseListener {
 
         habitDateDisplay = v.findViewById(R.id.habitDateDisplay);
         habitDateDisplay.setText(formatter.format(date));
+        dataHelper.setHabitCurrDate((String) habitDateDisplay.getText());
 
         habitDatePrev = v.findViewById(R.id.habitDatePrevious);
         habitDateNext = v.findViewById(R.id.habitDateNext);
@@ -93,6 +98,8 @@ public class HabitsFragment extends Fragment implements DialogCloseListener {
                     LocalDateTime ldt = LocalDateTime.ofInstant(currDate.toInstant(), ZoneId.systemDefault()).minusDays(1);
                     Date newDate = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
                     habitDateDisplay.setText(formatter.format(newDate));
+                    dataHelper.setHabitCurrDate((String) habitDateDisplay.getText());
+                    updateHabits();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -107,6 +114,8 @@ public class HabitsFragment extends Fragment implements DialogCloseListener {
                     LocalDateTime ldt = LocalDateTime.ofInstant(currDate.toInstant(), ZoneId.systemDefault()).plusDays(1);
                     Date newDate = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
                     habitDateDisplay.setText(formatter.format(newDate));
+                    dataHelper.setHabitCurrDate((String) habitDateDisplay.getText());
+                    updateHabits();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -116,6 +125,15 @@ public class HabitsFragment extends Fragment implements DialogCloseListener {
 
 
         return v;
+    }
+
+    public void updateHabits(){
+        habitsAdapter = new HabitAdapter(db, (MainActivity) this.getActivity());
+        habitsRecyclerView.setAdapter(habitsAdapter);
+        habitList = db.getAllHabits();
+        Collections.reverse(habitList);
+        habitsAdapter.setHabits(habitList);
+        habitsAdapter.notifyDataSetChanged();
     }
 
     @Override

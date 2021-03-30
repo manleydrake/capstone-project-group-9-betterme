@@ -6,9 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.betterme.Utils.DataHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static DataHelper dataHelper = new DataHelper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

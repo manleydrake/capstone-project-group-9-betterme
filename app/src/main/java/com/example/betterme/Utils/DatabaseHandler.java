@@ -6,14 +6,20 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.TextView;
 
+import com.example.betterme.HabitsFragment;
+import com.example.betterme.MainActivity;
 import com.example.betterme.Model.HabitModel;
 import com.example.betterme.Model.SymptomModel;
+import com.example.betterme.SymptomsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
+
+    public static DataHelper dataHelper = MainActivity.dataHelper;
 
     public static final String TAG = "Database";
 
@@ -106,9 +112,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void insertHabit(HabitModel habit) {
         ContentValues cv = new ContentValues();
         cv.put(HABIT_NAME, habit.getHabit());
-        cv.put(HABIT_COMPLETE, 0);
+        cv.put(HABIT_COMPLETE, habit.getStatus());
+        cv.put(HABIT_TRACK_DATE, habit.getHabitTrackDate());
         Log.d(TAG, "passing " + HABIT_NAME);
         Log.d(TAG, "passing " + HABIT_COMPLETE);
+        Log.d(TAG, "passing " + HABIT_TRACK_DATE);
         Log.d(TAG, "cv is " + cv);
         db.insert(HABIT_TRACKING_TABLE, null, cv);
         Log.d(TAG, "database insertion successful" );
@@ -117,7 +125,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void insertSymptom(SymptomModel symptom) {
         ContentValues cv = new ContentValues();
         cv.put(SYMPTOM_NAME, symptom.getSymptom());
-        cv.put(SYMPTOM_RATING, 0);
+        cv.put(SYMPTOM_RATING, symptom.getRating());
+        cv.put(SYMPTOM_TRACK_DATE, symptom.getSymptomTrackDate());
         Log.d(TAG, "passing " + SYMPTOM_NAME);
         Log.d(TAG, "passing " + SYMPTOM_RATING);
         Log.d(TAG, "cv is " + cv);
@@ -133,12 +142,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             cur = db.query(HABIT_TRACKING_TABLE, null, null, null, null, null, null, null);
             if(cur != null){
                 if(cur.moveToFirst()){
-                    do{
-                        HabitModel habit = new HabitModel();
-                        habit.setId(cur.getInt(cur.getColumnIndex(HABIT_ID)));
-                        habit.setHabit(cur.getString(cur.getColumnIndex(HABIT_NAME)));
-                        habit.setStatus(cur.getInt(cur.getColumnIndex(HABIT_COMPLETE)));
-                        habitList.add(habit);
+                    //ToDo: add an if statement here that checks if cur.getcolumnIndex(habit track date) to string is the string of the current date displayed
+                    do {
+                        Log.d(TAG, "habit date display: " + dataHelper.getHabitCurrDate());
+                        Log.d(TAG, "habit track date: " + cur.getString(cur.getColumnIndex(HABIT_TRACK_DATE)));
+                        if (!(cur.getString(cur.getColumnIndex(HABIT_TRACK_DATE)) == null) && cur.getString(cur.getColumnIndex(HABIT_TRACK_DATE)).equals(dataHelper.getHabitCurrDate())) {
+                            HabitModel habit = new HabitModel();
+                            habit.setId(cur.getInt(cur.getColumnIndex(HABIT_ID)));
+                            habit.setHabit(cur.getString(cur.getColumnIndex(HABIT_NAME)));
+                            habit.setStatus(cur.getInt(cur.getColumnIndex(HABIT_COMPLETE)));
+                            habit.setHabitTrackDate(cur.getString(cur.getColumnIndex(HABIT_TRACK_DATE)));
+                            habitList.add(habit);
+                        }
                     }
                     while(cur.moveToNext());
                 }
@@ -162,10 +177,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 if (cur.moveToFirst()) {
                     do {
                         SymptomModel symptom = new SymptomModel();
-                        symptom.setId(cur.getInt(cur.getColumnIndex(SYMPTOM_ID)));
-                        symptom.setSymptom(cur.getString(cur.getColumnIndex(SYMPTOM_NAME)));
-                        symptom.setRating(cur.getInt(cur.getColumnIndex(SYMPTOM_RATING)));
-                        symptomList.add(symptom);
+                        Log.d(TAG, "symptom date display: " + dataHelper.getSymptomCurrDate());
+                        Log.d(TAG, "symptom track date: " + cur.getString(cur.getColumnIndex(SYMPTOM_TRACK_DATE)));
+                        if (!(cur.getString(cur.getColumnIndex(SYMPTOM_TRACK_DATE)) == null) && cur.getString(cur.getColumnIndex(SYMPTOM_TRACK_DATE)).equals(dataHelper.getSymptomCurrDate())) {
+                            symptom.setId(cur.getInt(cur.getColumnIndex(SYMPTOM_ID)));
+                            symptom.setSymptom(cur.getString(cur.getColumnIndex(SYMPTOM_NAME)));
+                            symptom.setRating(cur.getInt(cur.getColumnIndex(SYMPTOM_RATING)));
+                            symptom.setSymptomTrackDate(cur.getString(cur.getColumnIndex(SYMPTOM_TRACK_DATE)));
+                            symptomList.add(symptom);
+                        }
                     }
                     while (cur.moveToNext());
                 }

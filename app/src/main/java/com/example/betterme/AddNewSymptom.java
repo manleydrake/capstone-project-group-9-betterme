@@ -12,12 +12,14 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.betterme.Adapter.SymptomAdapter;
 import com.example.betterme.Model.SymptomModel;
+import com.example.betterme.Utils.DataHelper;
 import com.example.betterme.Utils.DatabaseHandler;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -36,6 +38,7 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
     private List<SymptomModel> symptomList;
     private SymptomAdapter symptomsAdapter;
     public static RecyclerView symptomsRecyclerView = SymptomsFragment.symptomsRecyclerView;
+    public static DataHelper dataHelper = MainActivity.dataHelper;
 
     public static AddNewSymptom newInstance(){
         return new AddNewSymptom();
@@ -122,7 +125,8 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
             else{
                 SymptomModel symptom = new SymptomModel();
                 symptom.setSymptom(text);
-                symptom.setStatus(0);
+                symptom.setRating(0);
+                symptom.setSymptomTrackDate(dataHelper.getSymptomCurrDate());
                 db.insertSymptom(symptom);
                 updateSymptoms();
             }

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.example.betterme.Adapter.HabitAdapter;
 import com.example.betterme.Adapter.SymptomAdapter;
 import com.example.betterme.Model.HabitModel;
 import com.example.betterme.Model.SymptomModel;
+import com.example.betterme.Utils.DataHelper;
 import com.example.betterme.Utils.DatabaseHandler;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -45,6 +47,8 @@ public class SymptomsFragment extends Fragment implements DialogCloseListener{
     private ImageButton symptomDatePrev;
     private ImageButton symptomDateNext;
 
+    public static DataHelper dataHelper = MainActivity.dataHelper;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
@@ -54,8 +58,11 @@ public class SymptomsFragment extends Fragment implements DialogCloseListener{
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         Date date = new Date();
 
-        symptomDateDisplay = v.findViewById(R.id.symptomDateDisplay);
+        symptomDateDisplay = (TextView) v.findViewById(R.id.symptomDateDisplay);
         symptomDateDisplay.setText(formatter.format(date));
+        dataHelper.setSymptomCurrDate((String) symptomDateDisplay.getText());
+
+        Log.d("SymptomsFragment", "date display: " + symptomDateDisplay.getText());
 
         symptomDatePrev = v.findViewById(R.id.symptomDatePrevious);
         symptomDateNext = v.findViewById(R.id.symptomDateNext);
@@ -93,6 +100,9 @@ public class SymptomsFragment extends Fragment implements DialogCloseListener{
                     LocalDateTime ldt = LocalDateTime.ofInstant(currDate.toInstant(), ZoneId.systemDefault()).minusDays(1);
                     Date newDate = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
                     symptomDateDisplay.setText(formatter.format(newDate));
+                    dataHelper.setSymptomCurrDate((String) symptomDateDisplay.getText());
+
+                    updateSymptoms();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -108,6 +118,8 @@ public class SymptomsFragment extends Fragment implements DialogCloseListener{
                     LocalDateTime ldt = LocalDateTime.ofInstant(currDate.toInstant(), ZoneId.systemDefault()).plusDays(1);
                     Date newDate = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
                     symptomDateDisplay.setText(formatter.format(newDate));
+                    dataHelper.setSymptomCurrDate((String) symptomDateDisplay.getText());
+                    updateSymptoms();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -116,6 +128,15 @@ public class SymptomsFragment extends Fragment implements DialogCloseListener{
 
 
         return v;
+    }
+
+    public void updateSymptoms(){
+        symptomAdapter = new SymptomAdapter(db, (MainActivity) this.getActivity());
+        symptomsRecyclerView.setAdapter(symptomAdapter);
+        symptomList = db.getAllSymptoms();
+        Collections.reverse(symptomList);
+        symptomAdapter.setSymptoms(symptomList);
+        symptomAdapter.notifyDataSetChanged();
     }
 
     @Override
