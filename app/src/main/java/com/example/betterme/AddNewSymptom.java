@@ -12,7 +12,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,6 +40,7 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
     private SymptomAdapter symptomsAdapter;
     public static RecyclerView symptomsRecyclerView = SymptomsFragment.symptomsRecyclerView;
     public static DataHelper dataHelper = MainActivity.dataHelper;
+    private TimePicker simpleTimePicker;
 
     public static AddNewSymptom newInstance(){
         return new AddNewSymptom();
@@ -54,6 +56,7 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_new_symptom, container, false);
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
         symptomList = new ArrayList<>();
         symptomsAdapter = new SymptomAdapter(db, (MainActivity) this.getActivity());
         return view;
@@ -62,6 +65,8 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
+        simpleTimePicker =getView().findViewById(R.id.timePicker1);
+        simpleTimePicker.setIs24HourView(false);
         newSymptomText = getView().findViewById(R.id.newSymptomText);
         newSymptomSaveButton = getView().findViewById(R.id.newSymptomSave);
 
@@ -134,6 +139,14 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
         }
 
     });
+        simpleTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+            @Override
+            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                // display a toast with changed values of time picker
+                Toast.makeText(getContext(), hourOfDay + "  " + minute, Toast.LENGTH_SHORT).show();
+
+            }
+        });
     }
     @Override
     public void onDismiss(DialogInterface dialog){
