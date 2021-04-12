@@ -12,4 +12,5 @@
     <string name="newHabit">New Habit</string>
     <string name="save">Save</string>
     <string name="Login">Login</string>
+    <string name="DateEntry">mm/dd/yyyy</string>
 </resources>

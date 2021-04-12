@@ -10,18 +10,40 @@
         android:background="@null"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:hint="New Symptoms" />
+
+    <EditText
+        android:id="@+id/newSymptomStartDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:hint="Start Date"
+        android:layout_below="@id/newSymptomText"
+        android:paddingVertical="5dp"/>
+
+    <EditText
+        android:id="@+id/newSymptomEndDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:hint="End Date"
+        android:layout_below="@id/newSymptomStartDate"
+        android:paddingVertical="5dp"/>
+    <!--
     <TimePicker
         android:id="@+id/timePicker1"
         android:layout_width="wrap_content"
         android:layout_below="@id/newSymptomText"
         android:layout_height="wrap_content"
         android:timePickerMode="spinner"/>
+        -->
 
     <Button
         android:id="@+id/newSymptomSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/newSymptomText"
+        android:layout_below="@id/newSymptomEndDate"
         android:textSize="16sp"
         android:layout_alignParentEnd="true"
         android:background="@android:color/transparent"

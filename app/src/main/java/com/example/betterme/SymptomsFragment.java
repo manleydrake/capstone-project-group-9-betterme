@@ -80,7 +80,11 @@ public class SymptomsFragment extends Fragment implements DialogCloseListener{
 
         symptomAddButton = v.findViewById(R.id.newSymptomButton);
 
-        symptomList = db.getAllSymptoms();
+        try {
+            symptomList = db.getAllSymptoms();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         Collections.reverse(symptomList);
         symptomAdapter.setSymptoms(symptomList);
 
@@ -130,7 +134,7 @@ public class SymptomsFragment extends Fragment implements DialogCloseListener{
         return v;
     }
 
-    public void updateSymptoms(){
+    public void updateSymptoms() throws ParseException {
         symptomAdapter = new SymptomAdapter(db, (MainActivity) this.getActivity());
         symptomsRecyclerView.setAdapter(symptomAdapter);
         symptomList = db.getAllSymptoms();
@@ -140,7 +144,7 @@ public class SymptomsFragment extends Fragment implements DialogCloseListener{
     }
 
     @Override
-    public void handleDialogClose(DialogInterface dialog) {
+    public void handleDialogClose(DialogInterface dialog) throws ParseException {
         symptomList = db.getAllSymptoms();
         Collections.reverse(symptomList);
         symptomAdapter.setSymptoms(symptomList);

@@ -23,6 +23,7 @@ import com.example.betterme.Utils.DataHelper;
 import com.example.betterme.Utils.DatabaseHandler;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +34,8 @@ public class AddNewHabit extends BottomSheetDialogFragment {
     public static final String TAG = "ActionBottomDialog";
 
     private EditText newHabitText;
+    private EditText newHabitStartDate;
+    private EditText newHabitEndDate;
     private Button newHabitSaveButton;
     private DatabaseHandler db;
     private List<HabitModel> habitList;
@@ -63,6 +66,8 @@ public class AddNewHabit extends BottomSheetDialogFragment {
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
         newHabitText = getView().findViewById(R.id.newHabitText);
+        newHabitStartDate = getView().findViewById(R.id.newHabitStartDate);
+        newHabitEndDate = getView().findViewById(R.id.newHabitEndDate);
         newHabitSaveButton = getView().findViewById(R.id.newHabitSave);
 
         db = new DatabaseHandler(getActivity());
@@ -113,13 +118,19 @@ public class AddNewHabit extends BottomSheetDialogFragment {
             }
         });
 
+        newHabitStartDate.addTextChangedListener(new DateTextWatcher());
+        newHabitEndDate.addTextChangedListener(new DateTextWatcher());
+
         boolean finalIsUpdate = isUpdate;
         newHabitSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //check if we are trying to update an existing habit or enter a new habit
                 String text = newHabitText.getText().toString();
+                String startDate = newHabitStartDate.getText().toString();
+                String endDate = newHabitEndDate.getText().toString();
                 if(finalIsUpdate){
+                    //ToDo: make this update the start and end date as well potentially
                     db.updateHabit(bundle.getInt("habitID"), text);
                 }
                 else{
@@ -127,8 +138,14 @@ public class AddNewHabit extends BottomSheetDialogFragment {
                     habit.setHabit(text);
                     habit.setStatus(0);
                     habit.setHabitTrackDate(dataHelper.getHabitCurrDate());
+                    habit.setHabitStartDate(startDate);
+                    habit.setHabitEndDate(endDate);
                     db.insertHabit(habit);
-                    updateHabits();
+                    try {
+                        updateHabits();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
                 dismiss();
             }
@@ -141,11 +158,15 @@ public class AddNewHabit extends BottomSheetDialogFragment {
     public void onDismiss(DialogInterface dialog){
         Activity activity = getActivity();
         if(activity instanceof DialogCloseListener){
-            ((DialogCloseListener)activity).handleDialogClose(dialog);
+            try {
+                ((DialogCloseListener)activity).handleDialogClose(dialog);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public void updateHabits(){
+    public void updateHabits() throws ParseException {
         habitsAdapter = new HabitAdapter(db, (MainActivity) this.getActivity());
         habitsRecyclerView.setAdapter(habitsAdapter);
         habitList = db.getAllHabits();

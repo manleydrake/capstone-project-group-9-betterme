@@ -9,13 +9,34 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:hint="@string/newHabit" />
+        android:hint="@string/newHabit"
+        android:paddingVertical="5dp"/>
+
+    <EditText
+        android:id="@+id/newHabitStartDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:hint="Start Date"
+        android:layout_below="@id/newHabitText"
+        android:paddingVertical="5dp"/>
+
+    <EditText
+        android:id="@+id/newHabitEndDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:hint="End Date"
+        android:layout_below="@id/newHabitStartDate"
+        android:paddingVertical="5dp"/>
 
     <Button
         android:id="@+id/newHabitSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/newHabitText"
+        android:layout_below="@id/newHabitEndDate"
         android:textSize="16sp"
         android:layout_alignParentEnd="true"
         android:background="@android:color/transparent"

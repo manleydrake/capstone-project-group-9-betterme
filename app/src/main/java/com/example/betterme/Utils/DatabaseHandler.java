@@ -14,7 +14,10 @@ import com.example.betterme.Model.HabitModel;
 import com.example.betterme.Model.SymptomModel;
 import com.example.betterme.SymptomsFragment;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
@@ -23,7 +26,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public static final String TAG = "Database";
 
-    private static final int VERSION = 9;
+    private static final int VERSION = 10;
     private static final String NAME = "habitDB";  //Database name
 
     //User Table variables
@@ -53,7 +56,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     //Create habit tracking table
     private static final String CREATE_HABIT_TRACKING_TABLE = "CREATE TABLE " + HABIT_TRACKING_TABLE + "(" + HABIT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + HABIT_NAME + " TEXT, " + HABIT_TRACK_DATE + " TEXT, " + HABIT_COMPLETE + " INTEGER)";
+            + HABIT_NAME + " TEXT, " + HABIT_TRACK_DATE + " TEXT, " + HABIT_START_DATE + " TEXT, " + HABIT_END_DATE + " TEXT, "  + HABIT_COMPLETE + " INTEGER)";
 
     //Symptom Table variables
     private static final String SYMPTOM_TABLE = "symptomTable";
@@ -73,7 +76,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     //Create symptom tracking table variables
     private static final String CREATE_SYMPTOM_TRACKING_TABLE = "CREATE TABLE " + SYMPTOM_TRACKING_TABLE + "(" + SYMPTOM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + SYMPTOM_NAME + " TEXT, " + SYMPTOM_TRACK_DATE + " TEXT, " + SYMPTOM_RATING + " INTEGER)";
+            + SYMPTOM_NAME + " TEXT, " + SYMPTOM_TRACK_DATE + " TEXT, " + SYMPTOM_START_DATE + " TEXT, " + SYMPTOM_END_DATE + " TEXT, " + SYMPTOM_RATING + " INTEGER)";
 
 
     private SQLiteDatabase db;
@@ -110,13 +113,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public void insertHabit(HabitModel habit) {
+        //ToDo: change this to be inserting into habit and habit tracking tables separately (remove unneccessary columns from habit tracking table)
         ContentValues cv = new ContentValues();
         cv.put(HABIT_NAME, habit.getHabit());
         cv.put(HABIT_COMPLETE, habit.getStatus());
         cv.put(HABIT_TRACK_DATE, habit.getHabitTrackDate());
+        cv.put(HABIT_START_DATE, habit.getHabitStartDate());
+        cv.put(HABIT_END_DATE, habit.getHabitEndDate());
         Log.d(TAG, "passing " + HABIT_NAME);
         Log.d(TAG, "passing " + HABIT_COMPLETE);
         Log.d(TAG, "passing " + HABIT_TRACK_DATE);
+        Log.d(TAG, "passing start date " + HABIT_START_DATE);
+        Log.d(TAG, "passing end date " + HABIT_END_DATE);
         Log.d(TAG, "cv is " + cv);
         db.insert(HABIT_TRACKING_TABLE, null, cv);
         Log.d(TAG, "database insertion successful" );
@@ -127,6 +135,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cv.put(SYMPTOM_NAME, symptom.getSymptom());
         cv.put(SYMPTOM_RATING, symptom.getRating());
         cv.put(SYMPTOM_TRACK_DATE, symptom.getSymptomTrackDate());
+        cv.put(SYMPTOM_START_DATE, symptom.getSymptomStartDate());
+        cv.put(SYMPTOM_END_DATE, symptom.getSymptomEndDate());
         Log.d(TAG, "passing " + SYMPTOM_NAME);
         Log.d(TAG, "passing " + SYMPTOM_RATING);
         Log.d(TAG, "cv is " + cv);
@@ -134,24 +144,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Log.d(TAG, "database insertion successful" );
 
     }
-    public List<HabitModel> getAllHabits(){
+    public List<HabitModel> getAllHabits() throws ParseException {
         List<HabitModel> habitList = new ArrayList<>();
         Cursor cur = null;
         db.beginTransaction();
         try{
+            //ToDo: change this to HABIT_TABLE query and tracking table is just for status and track date (display date)
             cur = db.query(HABIT_TRACKING_TABLE, null, null, null, null, null, null, null);
             if(cur != null){
                 if(cur.moveToFirst()){
-                    //ToDo: add an if statement here that checks if cur.getcolumnIndex(habit track date) to string is the string of the current date displayed
                     do {
                         Log.d(TAG, "habit date display: " + dataHelper.getHabitCurrDate());
                         Log.d(TAG, "habit track date: " + cur.getString(cur.getColumnIndex(HABIT_TRACK_DATE)));
-                        if (!(cur.getString(cur.getColumnIndex(HABIT_TRACK_DATE)) == null) && cur.getString(cur.getColumnIndex(HABIT_TRACK_DATE)).equals(dataHelper.getHabitCurrDate())) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                        Date startDate = sdf.parse(cur.getString(cur.getColumnIndex(HABIT_START_DATE)));
+                        Date endDate = sdf.parse(cur.getString(cur.getColumnIndex(HABIT_END_DATE)));
+                        if ((endDate.after(sdf.parse(dataHelper.getHabitCurrDate())) || endDate.equals(sdf.parse(dataHelper.getHabitCurrDate())))
+                                && (startDate.equals(sdf.parse(dataHelper.getHabitCurrDate())) || startDate.before(sdf.parse(dataHelper.getHabitCurrDate())))) {
                             HabitModel habit = new HabitModel();
                             habit.setId(cur.getInt(cur.getColumnIndex(HABIT_ID)));
                             habit.setHabit(cur.getString(cur.getColumnIndex(HABIT_NAME)));
+                            //ToDo: add a query here for the tracking table to show the status for the current date
                             habit.setStatus(cur.getInt(cur.getColumnIndex(HABIT_COMPLETE)));
                             habit.setHabitTrackDate(cur.getString(cur.getColumnIndex(HABIT_TRACK_DATE)));
+                            habit.setHabitStartDate(cur.getString(cur.getColumnIndex(HABIT_START_DATE)));
+                            habit.setHabitEndDate(cur.getString(cur.getColumnIndex(HABIT_END_DATE)));
                             habitList.add(habit);
                         }
                     }
@@ -167,11 +184,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return habitList;
     }
 
-    public List<SymptomModel> getAllSymptoms() {
+    public List<SymptomModel> getAllSymptoms() throws ParseException {
         List<SymptomModel> symptomList = new ArrayList<>();
         Cursor cur = null;
         db.beginTransaction();
         try {
+            //ToDo: change this to SYMPTOM_TABLE query and tracking table is just for status and track date (display date)
             cur = db.query(SYMPTOM_TRACKING_TABLE, null, null, null, null, null, null, null);
             if (cur != null) {
                 if (cur.moveToFirst()) {
@@ -179,11 +197,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         SymptomModel symptom = new SymptomModel();
                         Log.d(TAG, "symptom date display: " + dataHelper.getSymptomCurrDate());
                         Log.d(TAG, "symptom track date: " + cur.getString(cur.getColumnIndex(SYMPTOM_TRACK_DATE)));
-                        if (!(cur.getString(cur.getColumnIndex(SYMPTOM_TRACK_DATE)) == null) && cur.getString(cur.getColumnIndex(SYMPTOM_TRACK_DATE)).equals(dataHelper.getSymptomCurrDate())) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                        Date startDate = sdf.parse(cur.getString(cur.getColumnIndex(SYMPTOM_START_DATE)));
+                        Date endDate = sdf.parse(cur.getString(cur.getColumnIndex(SYMPTOM_END_DATE)));
+                        if ((endDate.after(sdf.parse(dataHelper.getSymptomCurrDate())) || endDate.equals(sdf.parse(dataHelper.getSymptomCurrDate())))
+                                && (startDate.equals(sdf.parse(dataHelper.getSymptomCurrDate())) || startDate.before(sdf.parse(dataHelper.getSymptomCurrDate())))) {
                             symptom.setId(cur.getInt(cur.getColumnIndex(SYMPTOM_ID)));
                             symptom.setSymptom(cur.getString(cur.getColumnIndex(SYMPTOM_NAME)));
+                            //ToDo: add a query here for the tracking table to show the rating for the current date
                             symptom.setRating(cur.getInt(cur.getColumnIndex(SYMPTOM_RATING)));
                             symptom.setSymptomTrackDate(cur.getString(cur.getColumnIndex(SYMPTOM_TRACK_DATE)));
+                            symptom.setSymptomStartDate(cur.getString(cur.getColumnIndex(SYMPTOM_START_DATE)));
+                            symptom.setSymptomEndDate(cur.getString(cur.getColumnIndex(SYMPTOM_END_DATE)));
                             symptomList.add(symptom);
                         }
                     }

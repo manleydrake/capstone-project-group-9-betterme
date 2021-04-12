@@ -3,7 +3,7 @@ package com.example.betterme.Model;
 public class SymptomModel {
     private int id, status, rating;
     private String symptom;
-    private String symptomTrackDate;
+    private String symptomTrackDate, symptomStartDate, symptomEndDate;
 
     public int getId() {
         return id;
@@ -43,5 +43,21 @@ public class SymptomModel {
 
     public void setSymptomTrackDate(String symptomTrackDate){
         this.symptomTrackDate = symptomTrackDate;
+    }
+
+    public String getSymptomStartDate(){
+        return symptomStartDate;
+    }
+
+    public void setSymptomStartDate(String symptomStartDate){
+        this.symptomStartDate = symptomStartDate;
+    }
+
+    public String getSymptomEndDate(){
+        return symptomEndDate;
+    }
+
+    public void setSymptomEndDate(String symptomEndDate){
+        this.symptomEndDate = symptomEndDate;
     }
 }

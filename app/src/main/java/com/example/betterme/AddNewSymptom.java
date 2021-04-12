@@ -24,6 +24,7 @@ import com.example.betterme.Utils.DataHelper;
 import com.example.betterme.Utils.DatabaseHandler;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,14 +34,14 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
 
     public static final String TAG = "ActionBottomDialog";
 
-    private EditText newSymptomText;
+    private EditText newSymptomText, newSymptomStartDate, newSymptomEndDate;
     private Button newSymptomSaveButton;
     private DatabaseHandler db;
     private List<SymptomModel> symptomList;
     private SymptomAdapter symptomsAdapter;
     public static RecyclerView symptomsRecyclerView = SymptomsFragment.symptomsRecyclerView;
     public static DataHelper dataHelper = MainActivity.dataHelper;
-    private TimePicker simpleTimePicker;
+    //private TimePicker simpleTimePicker;
 
     public static AddNewSymptom newInstance(){
         return new AddNewSymptom();
@@ -65,9 +66,11 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
-        simpleTimePicker =getView().findViewById(R.id.timePicker1);
-        simpleTimePicker.setIs24HourView(false);
+        //simpleTimePicker =getView().findViewById(R.id.timePicker1);
+        //simpleTimePicker.setIs24HourView(false);
         newSymptomText = getView().findViewById(R.id.newSymptomText);
+        newSymptomStartDate = getView().findViewById(R.id.newSymptomStartDate);
+        newSymptomEndDate = getView().findViewById(R.id.newSymptomEndDate);
         newSymptomSaveButton = getView().findViewById(R.id.newSymptomSave);
 
         db = new DatabaseHandler(getActivity());
@@ -124,6 +127,8 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
         public void onClick(View v) {
             //check if we are trying to update and existing symptom or enter a new one
             String text = newSymptomText.getText().toString();
+            String startDate = newSymptomStartDate.getText().toString();
+            String endDate = newSymptomEndDate.getText().toString();
             if(finalIsUpdate){
                 db.updateSymptom(bundle.getInt("symptomID"), text);
             }
@@ -132,13 +137,20 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
                 symptom.setSymptom(text);
                 symptom.setRating(0);
                 symptom.setSymptomTrackDate(dataHelper.getSymptomCurrDate());
+                symptom.setSymptomStartDate(startDate);
+                symptom.setSymptomEndDate(endDate);
                 db.insertSymptom(symptom);
-                updateSymptoms();
+                try {
+                    updateSymptoms();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
             dismiss();
         }
 
     });
+    /**
         simpleTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
@@ -146,17 +158,21 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
                 Toast.makeText(getContext(), hourOfDay + "  " + minute, Toast.LENGTH_SHORT).show();
 
             }
-        });
+        });**/
     }
     @Override
     public void onDismiss(DialogInterface dialog){
         Activity activity = getActivity();
         if(activity instanceof DialogCloseListener){
-            ((DialogCloseListener)activity).handleDialogClose(dialog);
+            try {
+                ((DialogCloseListener)activity).handleDialogClose(dialog);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public void updateSymptoms(){
+    public void updateSymptoms() throws ParseException {
         symptomsAdapter = new SymptomAdapter(db, (MainActivity) this.getActivity());
         symptomsRecyclerView.setAdapter(symptomsAdapter);
         symptomList = db.getAllSymptoms();

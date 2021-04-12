@@ -79,7 +79,11 @@ public class HabitsFragment extends Fragment implements DialogCloseListener {
 
         habitAddButton = v.findViewById(R.id.newHabitButton);
 
-        habitList = db.getAllHabits();
+        try {
+            habitList = db.getAllHabits();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         Collections.reverse(habitList);
         habitsAdapter.setHabits(habitList);
 
@@ -127,7 +131,7 @@ public class HabitsFragment extends Fragment implements DialogCloseListener {
         return v;
     }
 
-    public void updateHabits(){
+    public void updateHabits() throws ParseException {
         habitsAdapter = new HabitAdapter(db, (MainActivity) this.getActivity());
         habitsRecyclerView.setAdapter(habitsAdapter);
         habitList = db.getAllHabits();
@@ -137,7 +141,7 @@ public class HabitsFragment extends Fragment implements DialogCloseListener {
     }
 
     @Override
-    public void handleDialogClose(DialogInterface dialog){
+    public void handleDialogClose(DialogInterface dialog) throws ParseException {
         habitList = db.getAllHabits();
         Collections.reverse(habitList);
         habitsAdapter.setHabits(habitList);
