@@ -26,7 +26,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public static final String TAG = "Database";
 
-    private static final int VERSION = 10;
+    private static final int VERSION = 13;
     private static final String NAME = "habitDB";  //Database name
 
     //User Table variables
@@ -55,8 +55,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String HABIT_COMPLETE = "habitStatus";
 
     //Create habit tracking table
-    private static final String CREATE_HABIT_TRACKING_TABLE = "CREATE TABLE " + HABIT_TRACKING_TABLE + "(" + HABIT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + HABIT_NAME + " TEXT, " + HABIT_TRACK_DATE + " TEXT, " + HABIT_START_DATE + " TEXT, " + HABIT_END_DATE + " TEXT, "  + HABIT_COMPLETE + " INTEGER)";
+    private static final String CREATE_HABIT_TRACKING_TABLE = "CREATE TABLE " + HABIT_TRACKING_TABLE + "(" + HABIT_NAME + " TEXT, " + HABIT_COMPLETE + " INTEGER, "
+            + HABIT_TRACK_DATE + " TEXT, PRIMARY KEY (" + HABIT_NAME + ", " + HABIT_TRACK_DATE + "))";
 
     //Symptom Table variables
     private static final String SYMPTOM_TABLE = "symptomTable";
@@ -116,17 +116,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         //ToDo: change this to be inserting into habit and habit tracking tables separately (remove unneccessary columns from habit tracking table)
         ContentValues cv = new ContentValues();
         cv.put(HABIT_NAME, habit.getHabit());
-        cv.put(HABIT_COMPLETE, habit.getStatus());
-        cv.put(HABIT_TRACK_DATE, habit.getHabitTrackDate());
         cv.put(HABIT_START_DATE, habit.getHabitStartDate());
         cv.put(HABIT_END_DATE, habit.getHabitEndDate());
         Log.d(TAG, "passing " + HABIT_NAME);
-        Log.d(TAG, "passing " + HABIT_COMPLETE);
-        Log.d(TAG, "passing " + HABIT_TRACK_DATE);
         Log.d(TAG, "passing start date " + HABIT_START_DATE);
         Log.d(TAG, "passing end date " + HABIT_END_DATE);
         Log.d(TAG, "cv is " + cv);
-        db.insert(HABIT_TRACKING_TABLE, null, cv);
+        db.insert(HABIT_TABLE,null,cv);
+
+        ContentValues cv2 = new ContentValues();
+        cv2.put(HABIT_NAME, habit.getHabit());
+        cv2.put(HABIT_COMPLETE, habit.getStatus());
+        cv2.put(HABIT_TRACK_DATE, habit.getHabitTrackDate());
+        Log.d(TAG, "passing " + HABIT_COMPLETE);
+        Log.d(TAG, "passing " + HABIT_TRACK_DATE);
+        db.insert(HABIT_TRACKING_TABLE, null, cv2);
         Log.d(TAG, "database insertion successful" );
     }
 
@@ -150,12 +154,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.beginTransaction();
         try{
             //ToDo: change this to HABIT_TABLE query and tracking table is just for status and track date (display date)
-            cur = db.query(HABIT_TRACKING_TABLE, null, null, null, null, null, null, null);
+            cur = db.query(HABIT_TABLE, null, null, null, null, null, null, null);
             if(cur != null){
                 if(cur.moveToFirst()){
                     do {
                         Log.d(TAG, "habit date display: " + dataHelper.getHabitCurrDate());
-                        Log.d(TAG, "habit track date: " + cur.getString(cur.getColumnIndex(HABIT_TRACK_DATE)));
                         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
                         Date startDate = sdf.parse(cur.getString(cur.getColumnIndex(HABIT_START_DATE)));
                         Date endDate = sdf.parse(cur.getString(cur.getColumnIndex(HABIT_END_DATE)));
@@ -165,8 +168,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                             habit.setId(cur.getInt(cur.getColumnIndex(HABIT_ID)));
                             habit.setHabit(cur.getString(cur.getColumnIndex(HABIT_NAME)));
                             //ToDo: add a query here for the tracking table to show the status for the current date
-                            habit.setStatus(cur.getInt(cur.getColumnIndex(HABIT_COMPLETE)));
-                            habit.setHabitTrackDate(cur.getString(cur.getColumnIndex(HABIT_TRACK_DATE)));
+                            String habitTrackQuery = HABIT_TRACK_DATE + " = \'" + dataHelper.getHabitCurrDate() + "\' and " + HABIT_NAME + " = \'" + cur.getString(cur.getColumnIndex(HABIT_NAME)) + "\'";
+                            Log.d(TAG, habitTrackQuery);
+                            Cursor habitTrackQueryResults = db.query(HABIT_TRACKING_TABLE, null, habitTrackQuery, null, null, null, null, null);
+                            if(habitTrackQueryResults != null){
+                                Log.d(TAG, "query results");
+                                if(habitTrackQueryResults.moveToFirst()){
+                                    Log.d(TAG, String.valueOf(habitTrackQueryResults.getInt(habitTrackQueryResults.getColumnIndex(HABIT_COMPLETE))));
+                                    Log.d(TAG, habitTrackQueryResults.getString(habitTrackQueryResults.getColumnIndex(HABIT_TRACK_DATE)));
+                                    habit.setStatus(habitTrackQueryResults.getInt(habitTrackQueryResults.getColumnIndex(HABIT_COMPLETE)));
+                                    habit.setHabitTrackDate(habitTrackQueryResults.getString(habitTrackQueryResults.getColumnIndex(HABIT_TRACK_DATE)));
+                                }
+                            }
                             habit.setHabitStartDate(cur.getString(cur.getColumnIndex(HABIT_START_DATE)));
                             habit.setHabitEndDate(cur.getString(cur.getColumnIndex(HABIT_END_DATE)));
                             habitList.add(habit);
@@ -222,10 +235,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         return symptomList;
     }
-    public void updateHabitStatus(int id, int status){
+    public void updateHabitStatus(String habitName, int status){
         ContentValues cv = new ContentValues();
         cv.put(HABIT_COMPLETE, status);
-        db.update(HABIT_TRACKING_TABLE, cv, HABIT_ID + "= ?", new String[] {String.valueOf(id)});
+        cv.put(HABIT_TRACK_DATE, dataHelper.getHabitCurrDate());
+        cv.put(HABIT_NAME, habitName);
+        db.replace(HABIT_TRACKING_TABLE, null, cv);
+        Log.d(TAG, "cv is " + cv);
     }
 
     public void updateSymptomRating(int id, int rating) {

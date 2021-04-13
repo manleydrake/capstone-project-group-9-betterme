@@ -3,6 +3,7 @@ package com.example.betterme.Adapter;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,10 +49,12 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    db.updateHabitStatus(item.getId(), 1);
+                    db.updateHabitStatus(item.getHabit(), 1);
+                    Log.d("Habit Adapter", "updating status to 1");
                 }
                 else{
-                    db.updateHabitStatus(item.getId(), 0);
+                    db.updateHabitStatus(item.getHabit(), 0);
+                    Log.d("Habit Adapter", "updating status to 0");
                 }
             }
         });
