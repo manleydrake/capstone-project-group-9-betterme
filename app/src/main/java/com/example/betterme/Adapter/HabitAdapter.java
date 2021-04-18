@@ -2,7 +2,6 @@ package com.example.betterme.Adapter;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,7 +60,7 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
     }
 
     public int getItemCount(){
-        return habitList.size();
+       return habitList.size();
     }
 
     private boolean toBoolean(int n){
@@ -81,6 +80,13 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
     public void setHabitList(List<HabitModel> habitList){
         this.habitList = habitList;
     }
+
+   /* public void deleteItem(int position){
+        HabitModel item = habitList.get(position);
+        db.deleteHabit(item.getId());
+        habitList.remove(position);
+        notifyItemRemoved(position);
+    }*/
 
     public void editItem(int position){
         HabitModel item = habitList.get(position);
