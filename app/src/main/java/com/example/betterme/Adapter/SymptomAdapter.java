@@ -66,7 +66,7 @@ public class SymptomAdapter extends RecyclerView.Adapter<SymptomAdapter.ViewHold
             @Override
             public void onStopTrackingTouch(Slider slider) {
                 // Responds to when slider's touch event is being stopped
-                db.updateSymptomRating(symptom.getId(), (int) slider.getValue());
+                db.updateSymptomRating(symptom.getSymptom(), (int) slider.getValue());
             }
         });
 

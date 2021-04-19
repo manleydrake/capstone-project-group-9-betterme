@@ -9,7 +9,8 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:hint="New Symptoms" />
+        android:hint="New Symptom"
+        android:paddingVertical="5dp"/>
 
     <EditText
         android:id="@+id/newSymptomStartDate"

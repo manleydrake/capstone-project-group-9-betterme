@@ -26,7 +26,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public static final String TAG = "Database";
 
-    private static final int VERSION = 15;
+    private static final int VERSION = 16;
     private static final String NAME = "habitDB";  //Database name
 
     //User Table variables
@@ -74,9 +74,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String SYMPTOM_TRACK_DATE = "symptomTrackDate";
     private static final String SYMPTOM_RATING = "symptomRating";
 
-    //Create symptom tracking table variables
-    private static final String CREATE_SYMPTOM_TRACKING_TABLE = "CREATE TABLE " + SYMPTOM_TRACKING_TABLE + "(" + SYMPTOM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + SYMPTOM_NAME + " TEXT, " + SYMPTOM_TRACK_DATE + " TEXT, " + SYMPTOM_START_DATE + " TEXT, " + SYMPTOM_END_DATE + " TEXT, " + SYMPTOM_RATING + " INTEGER)";
+    //Create symptom tracking table
+    private static final String CREATE_SYMPTOM_TRACKING_TABLE = "CREATE TABLE " + SYMPTOM_TRACKING_TABLE + "(" + SYMPTOM_NAME + " TEXT, " + SYMPTOM_RATING + " INTEGER, "
+            + SYMPTOM_TRACK_DATE + " TEXT, PRIMARY KEY (" + SYMPTOM_NAME + ", " + SYMPTOM_TRACK_DATE + "))";
 
 
     private SQLiteDatabase db;
@@ -137,14 +137,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void insertSymptom(SymptomModel symptom) {
         ContentValues cv = new ContentValues();
         cv.put(SYMPTOM_NAME, symptom.getSymptom());
-        cv.put(SYMPTOM_RATING, symptom.getRating());
-        cv.put(SYMPTOM_TRACK_DATE, symptom.getSymptomTrackDate());
         cv.put(SYMPTOM_START_DATE, symptom.getSymptomStartDate());
         cv.put(SYMPTOM_END_DATE, symptom.getSymptomEndDate());
         Log.d(TAG, "passing " + SYMPTOM_NAME);
-        Log.d(TAG, "passing " + SYMPTOM_RATING);
+        Log.d(TAG, "passing " + SYMPTOM_START_DATE + " to " + SYMPTOM_END_DATE);
         Log.d(TAG, "cv is " + cv);
-        db.insert(SYMPTOM_TRACKING_TABLE, null, cv);
+        db.insert(SYMPTOM_TABLE, null, cv);
+
+        ContentValues cv2 = new ContentValues();
+        cv2.put(SYMPTOM_NAME, symptom.getSymptom());
+        cv2.put(SYMPTOM_RATING, symptom.getRating());
+        cv2.put(SYMPTOM_TRACK_DATE, symptom.getSymptomTrackDate());
+        Log.d(TAG, "passing " + SYMPTOM_RATING);
+        Log.d(TAG, "passing " + SYMPTOM_TRACK_DATE);
+        db.insert(SYMPTOM_TRACKING_TABLE, null, cv2);
         Log.d(TAG, "database insertion successful" );
 
     }
@@ -153,7 +159,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cur = null;
         db.beginTransaction();
         try{
-            //ToDo: change this to HABIT_TABLE query and tracking table is just for status and track date (display date)
             cur = db.query(HABIT_TABLE, null, null, null, null, null, null, null);
             if(cur != null){
                 if(cur.moveToFirst()){
@@ -167,7 +172,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                             HabitModel habit = new HabitModel();
                             habit.setId(cur.getInt(cur.getColumnIndex(HABIT_ID)));
                             habit.setHabit(cur.getString(cur.getColumnIndex(HABIT_NAME)));
-                            //ToDo: add a query here for the tracking table to show the status for the current date
                             String habitTrackQuery = HABIT_TRACK_DATE + " = \'" + dataHelper.getHabitCurrDate() + "\' and " + HABIT_NAME + " = \'" + cur.getString(cur.getColumnIndex(HABIT_NAME)) + "\'";
                             Log.d(TAG, habitTrackQuery);
                             Cursor habitTrackQueryResults = db.query(HABIT_TRACKING_TABLE, null, habitTrackQuery, null, null, null, null, null);
@@ -203,13 +207,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.beginTransaction();
         try {
             //ToDo: change this to SYMPTOM_TABLE query and tracking table is just for status and track date (display date)
-            cur = db.query(SYMPTOM_TRACKING_TABLE, null, null, null, null, null, null, null);
+            cur = db.query(SYMPTOM_TABLE, null, null, null, null, null, null, null);
             if (cur != null) {
                 if (cur.moveToFirst()) {
                     do {
                         SymptomModel symptom = new SymptomModel();
                         Log.d(TAG, "symptom date display: " + dataHelper.getSymptomCurrDate());
-                        Log.d(TAG, "symptom track date: " + cur.getString(cur.getColumnIndex(SYMPTOM_TRACK_DATE)));
                         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
                         Date startDate = sdf.parse(cur.getString(cur.getColumnIndex(SYMPTOM_START_DATE)));
                         Date endDate = sdf.parse(cur.getString(cur.getColumnIndex(SYMPTOM_END_DATE)));
@@ -218,8 +221,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                             symptom.setId(cur.getInt(cur.getColumnIndex(SYMPTOM_ID)));
                             symptom.setSymptom(cur.getString(cur.getColumnIndex(SYMPTOM_NAME)));
                             //ToDo: add a query here for the tracking table to show the rating for the current date
-                            symptom.setRating(cur.getInt(cur.getColumnIndex(SYMPTOM_RATING)));
-                            symptom.setSymptomTrackDate(cur.getString(cur.getColumnIndex(SYMPTOM_TRACK_DATE)));
+                            String symptomTrackQuery = SYMPTOM_TRACK_DATE + " = \'" + dataHelper.getSymptomCurrDate() + "\' and " + SYMPTOM_NAME + " = \'" + cur.getString(cur.getColumnIndex(SYMPTOM_NAME)) + "\'";
+                            Log.d(TAG, symptomTrackQuery);
+                            Cursor symptomTrackQueryResults = db.query(SYMPTOM_TRACKING_TABLE, null, symptomTrackQuery, null, null, null, null, null);
+                            if(symptomTrackQueryResults != null){
+                                Log.d(TAG, "query results");
+                                if(symptomTrackQueryResults.moveToFirst()){
+                                    Log.d(TAG, String.valueOf(symptomTrackQueryResults.getInt(symptomTrackQueryResults.getColumnIndex(SYMPTOM_RATING))));
+                                    Log.d(TAG, symptomTrackQueryResults.getString(symptomTrackQueryResults.getColumnIndex(SYMPTOM_TRACK_DATE)));
+                                    symptom.setRating(symptomTrackQueryResults.getInt(symptomTrackQueryResults.getColumnIndex(SYMPTOM_RATING)));
+                                    symptom.setSymptomTrackDate(symptomTrackQueryResults.getString(symptomTrackQueryResults.getColumnIndex(SYMPTOM_TRACK_DATE)));
+                                }
+                            }
+
                             symptom.setSymptomStartDate(cur.getString(cur.getColumnIndex(SYMPTOM_START_DATE)));
                             symptom.setSymptomEndDate(cur.getString(cur.getColumnIndex(SYMPTOM_END_DATE)));
                             symptomList.add(symptom);
@@ -244,10 +258,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Log.d(TAG, "cv is " + cv);
     }
 
-    public void updateSymptomRating(int id, int rating) {
+    public void updateSymptomRating(String symptomName, int rating) {
         ContentValues cv = new ContentValues();
         cv.put(SYMPTOM_RATING, rating);
-        db.update(SYMPTOM_TRACKING_TABLE, cv, SYMPTOM_ID + "= ?", new String[] {String.valueOf(id)});
+        cv.put(SYMPTOM_TRACK_DATE, dataHelper.getSymptomCurrDate());
+        cv.put(SYMPTOM_NAME, symptomName);
+        db.replace(SYMPTOM_TRACKING_TABLE, null, cv);
     }
 
     public void updateHabit(int id, String habit) {
