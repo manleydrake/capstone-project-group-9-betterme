@@ -126,8 +126,8 @@ public class AddNewHabit extends BottomSheetDialogFragment {
             public void onClick(View v) {
                 //check if we are trying to update an existing habit or enter a new habit
                 String text = newHabitText.getText().toString();
-                //String startDate = newHabitStartDate.getText().toString();
-               // String endDate = newHabitEndDate.getText().toString();
+                String startDate = newHabitStartDate.getText().toString();
+                String endDate = newHabitEndDate.getText().toString();
                 if(finalIsUpdate){
                     //ToDo: make this update the start and end date as well potentially
                     db.updateHabit(bundle.getInt("habitID"), text);
@@ -136,9 +136,9 @@ public class AddNewHabit extends BottomSheetDialogFragment {
                     HabitModel habit = new HabitModel();
                     habit.setHabit(text);
                     habit.setStatus(0);
-                  //  habit.setHabitTrackDate(dataHelper.getHabitCurrDate());
-                    //habit.setHabitStartDate(startDate);
-                    //habit.setHabitEndDate(endDate);
+                    habit.setHabitTrackDate(dataHelper.getHabitCurrDate());
+                    habit.setHabitStartDate(startDate);
+                    habit.setHabitEndDate(endDate);
                     db.insertHabit(habit);
                     try {
                         updateHabits();
