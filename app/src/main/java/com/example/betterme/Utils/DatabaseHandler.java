@@ -206,7 +206,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cur = null;
         db.beginTransaction();
         try {
-            //ToDo: change this to SYMPTOM_TABLE query and tracking table is just for status and track date (display date)
             cur = db.query(SYMPTOM_TABLE, null, null, null, null, null, null, null);
             if (cur != null) {
                 if (cur.moveToFirst()) {
@@ -220,7 +219,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                                 && (startDate.equals(sdf.parse(dataHelper.getSymptomCurrDate())) || startDate.before(sdf.parse(dataHelper.getSymptomCurrDate())))) {
                             symptom.setId(cur.getInt(cur.getColumnIndex(SYMPTOM_ID)));
                             symptom.setSymptom(cur.getString(cur.getColumnIndex(SYMPTOM_NAME)));
-                            //ToDo: add a query here for the tracking table to show the rating for the current date
                             String symptomTrackQuery = SYMPTOM_TRACK_DATE + " = \'" + dataHelper.getSymptomCurrDate() + "\' and " + SYMPTOM_NAME + " = \'" + cur.getString(cur.getColumnIndex(SYMPTOM_NAME)) + "\'";
                             Log.d(TAG, symptomTrackQuery);
                             Cursor symptomTrackQueryResults = db.query(SYMPTOM_TRACKING_TABLE, null, symptomTrackQuery, null, null, null, null, null);
@@ -249,6 +247,64 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         return symptomList;
     }
+
+    public List<HabitModel> getDailyHabits(String day){
+        List<HabitModel> dailyHabitList = new ArrayList<>();
+        Cursor cur = null;
+        db.beginTransaction();
+        try{
+            String habitByDayQuery = HABIT_TRACK_DATE + " = \'" + day + "\'";
+            Log.d(TAG, habitByDayQuery);
+            cur = db.query(HABIT_TRACKING_TABLE, null, habitByDayQuery, null, null, null, null, null);
+            if(cur != null){
+                if(cur.moveToFirst()) {
+                    do{
+                        HabitModel habit = new HabitModel();
+                        habit.setHabit(cur.getString(cur.getColumnIndex(HABIT_NAME)));
+                        habit.setStatus(cur.getInt(cur.getColumnIndex(HABIT_COMPLETE)));
+                        Log.d(TAG, cur.getString(cur.getColumnIndex(HABIT_NAME)));
+                        dailyHabitList.add(habit);
+                    }
+                    while (cur.moveToNext());
+                }
+            }
+        } finally {
+            db.endTransaction();
+            assert cur != null;
+            cur.close();
+        }
+
+        return dailyHabitList;
+    }
+
+    public List<SymptomModel> getDailySymptoms(String day){
+        List<SymptomModel> dailySymptomList = new ArrayList<>();
+        Cursor cur = null;
+        db.beginTransaction();
+        try{
+            String symptomByDayQuery = SYMPTOM_TRACK_DATE + " = \'" + day + "\'";
+            cur = db.query(SYMPTOM_TRACKING_TABLE, null, symptomByDayQuery, null, null, null, null, null);
+            if(cur != null){
+                if(cur.moveToFirst()) {
+                    do{
+                        SymptomModel symptom = new SymptomModel();
+                        symptom.setSymptom(cur.getString(cur.getColumnIndex(SYMPTOM_NAME)));
+                        symptom.setRating(cur.getInt(cur.getColumnIndex(SYMPTOM_RATING)));
+                        Log.d(TAG, cur.getString(cur.getColumnIndex(SYMPTOM_NAME)));
+                        dailySymptomList.add(symptom);
+                    }
+                    while (cur.moveToNext());
+                }
+            }
+        } finally {
+            db.endTransaction();
+            assert cur != null;
+            cur.close();
+        }
+
+        return dailySymptomList;
+    }
+
     public void updateHabitStatus(String habitName, int status){
         ContentValues cv = new ContentValues();
         cv.put(HABIT_COMPLETE, status);
