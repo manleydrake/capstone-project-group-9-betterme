@@ -6,13 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.TextView;
 
-import com.example.betterme.HabitsFragment;
 import com.example.betterme.MainActivity;
 import com.example.betterme.Model.HabitModel;
 import com.example.betterme.Model.SymptomModel;
-import com.example.betterme.SymptomsFragment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

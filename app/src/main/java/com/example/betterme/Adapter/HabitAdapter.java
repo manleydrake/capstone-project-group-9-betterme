@@ -81,12 +81,12 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
         this.habitList = habitList;
     }
 
-   /* public void deleteItem(int position){
+   public void deleteItem(int position){
         HabitModel item = habitList.get(position);
         db.deleteHabit(item.getId());
         habitList.remove(position);
         notifyItemRemoved(position);
-    }*/
+    }
 
     public void editItem(int position){
         HabitModel item = habitList.get(position);
