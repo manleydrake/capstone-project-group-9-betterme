@@ -23,7 +23,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public static final String TAG = "Database";
 
-    private static final int VERSION = 17;
+    private static final int VERSION = 18;
     private static final String NAME = "habitDB";  //Database name
 
     //User Table variables
@@ -327,9 +327,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.update(HABIT_TABLE, cv, HABIT_ID + "= ?", new String[] {String.valueOf(id)});
     }
 
-    public void updateSymptom(int id, String symptom) {
+    public void updateSymptom(int id, String symptom, String startDate, String endDate) {
         ContentValues cv = new ContentValues();
         cv.put(SYMPTOM_NAME, symptom);
+        cv.put(SYMPTOM_START_DATE, startDate);
+        cv.put(SYMPTOM_END_DATE, endDate);
         db.update(SYMPTOM_TABLE, cv, SYMPTOM_ID + "= ?", new String[] {String.valueOf(id)});
     }
 

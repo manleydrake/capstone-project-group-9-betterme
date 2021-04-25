@@ -85,6 +85,7 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
             isUpdate = true;
             String symptom = bundle.getString("symptomName");
             newSymptomText.setText(symptom);
+            Log.d("AddNewSymptom", "edit symptom name: " + symptom);
             assert symptom != null;
             //>0 then text exists and we want to save to be valid
             if(symptom.length()>0){
@@ -130,7 +131,12 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
             String startDate = newSymptomStartDate.getText().toString();
             String endDate = newSymptomEndDate.getText().toString();
             if(finalIsUpdate){
-                db.updateSymptom(bundle.getInt("symptomID"), text);
+                db.updateSymptom(bundle.getInt("symptomID"), text, startDate, endDate);
+                try {
+                    updateSymptoms();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
             else{
                 SymptomModel symptom = new SymptomModel();

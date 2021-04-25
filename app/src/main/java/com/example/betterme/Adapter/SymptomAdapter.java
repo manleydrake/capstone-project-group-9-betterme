@@ -80,7 +80,7 @@ public class SymptomAdapter extends RecyclerView.Adapter<SymptomAdapter.ViewHold
         SymptomModel item;
         if (symptomList != null && symptomList.size() !=0) {
             item = symptomList.get(position);
-            db.deleteHabit(item.getId());
+            db.deleteSymptom(item.getId());
             symptomList.remove(position);
         }
         notifyItemRemoved(position);
