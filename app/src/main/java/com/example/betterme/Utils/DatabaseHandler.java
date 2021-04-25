@@ -319,16 +319,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.replace(SYMPTOM_TRACKING_TABLE, null, cv);
     }
 
-    public void updateHabit(int id, String habit) {
+    public void updateHabit(int id, String habit, String startDate, String endDate) {
         ContentValues cv = new ContentValues();
         cv.put(HABIT_NAME, habit);
-        db.update(HABIT_TRACKING_TABLE, cv, HABIT_ID + "= ?", new String[] {String.valueOf(id)});
+        cv.put(HABIT_START_DATE, startDate);
+        cv.put(HABIT_END_DATE, endDate);
+        db.update(HABIT_TABLE, cv, HABIT_ID + "= ?", new String[] {String.valueOf(id)});
     }
 
     public void updateSymptom(int id, String symptom) {
         ContentValues cv = new ContentValues();
         cv.put(SYMPTOM_NAME, symptom);
-        db.update(SYMPTOM_TRACKING_TABLE, cv, SYMPTOM_ID + "= ?", new String[] {String.valueOf(id)});
+        db.update(SYMPTOM_TABLE, cv, SYMPTOM_ID + "= ?", new String[] {String.valueOf(id)});
     }
 
     public void deleteHabit(int id){

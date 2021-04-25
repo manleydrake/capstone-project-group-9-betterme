@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,6 +78,7 @@ public class AddNewHabit extends BottomSheetDialogFragment {
         //getArguments is used to pass any data from adapters to fragments
         final Bundle bundle = getArguments();
         if(bundle != null){
+            Log.d("AddNewHabit", "Bundle not null");
             isUpdate = true;
             String habit = bundle.getString("habitName");
             newHabitText.setText(habit);
@@ -129,8 +131,13 @@ public class AddNewHabit extends BottomSheetDialogFragment {
                 String startDate = newHabitStartDate.getText().toString();
                 String endDate = newHabitEndDate.getText().toString();
                 if(finalIsUpdate){
-                    //ToDo: make this update the start and end date as well potentially
-                    db.updateHabit(bundle.getInt("habitID"), text);
+                    Log.d("AddNewHabit", "Updating Existing Habit");
+                    db.updateHabit(bundle.getInt("habitID"), text, startDate, endDate);
+                    try {
+                        updateHabits();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
                 else{
                     HabitModel habit = new HabitModel();
