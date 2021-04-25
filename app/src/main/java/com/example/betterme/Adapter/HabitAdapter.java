@@ -93,10 +93,9 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
 
     public void editItem(int position){
         HabitModel item;
-        Bundle bundle = null;
+        Bundle bundle = new Bundle();
         if(habitList != null && habitList.size() !=0){
             item = habitList.get(position);
-            bundle = new Bundle();
             bundle.putInt("habitID", item.getId());
             bundle.putString("habitName", item.getHabit());
         }

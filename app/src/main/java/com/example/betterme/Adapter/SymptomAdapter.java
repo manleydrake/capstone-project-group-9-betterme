@@ -2,15 +2,11 @@ package com.example.betterme.Adapter;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.betterme.AddNewSymptom;
@@ -80,11 +76,24 @@ public class SymptomAdapter extends RecyclerView.Adapter<SymptomAdapter.ViewHold
         this.symptomList = symptomList;
     }
 
+    public void deleteItem(int position){
+        SymptomModel item;
+        if (symptomList != null && symptomList.size() !=0) {
+            item = symptomList.get(position);
+            db.deleteHabit(item.getId());
+            symptomList.remove(position);
+        }
+        notifyItemRemoved(position);
+    }
+
     public void editSymptoms(int position){
-        SymptomModel symptom = symptomList.get(position);
+        SymptomModel symptom;
         Bundle bundle = new Bundle();
-        bundle.putInt("symptomID", symptom.getId());
-        bundle.putString("symptomName", symptom.getSymptom());
+        if(symptomList != null && symptomList.size() !=0){
+            symptom = symptomList.get(position);
+            bundle.putInt("symptomID", symptom.getId());
+            bundle.putString("symptomName", symptom.getSymptom());
+        }
         AddNewSymptom fragment = new AddNewSymptom();
         fragment.setArguments(bundle);
         fragment.show(activity.getSupportFragmentManager(), AddNewSymptom.TAG);

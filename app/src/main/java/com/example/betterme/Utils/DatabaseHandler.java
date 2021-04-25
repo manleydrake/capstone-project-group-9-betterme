@@ -23,7 +23,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public static final String TAG = "Database";
 
-    private static final int VERSION = 16;
+    private static final int VERSION = 17;
     private static final String NAME = "habitDB";  //Database name
 
     //User Table variables
