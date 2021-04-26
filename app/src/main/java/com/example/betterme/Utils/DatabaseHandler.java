@@ -6,13 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.TextView;
 
-import com.example.betterme.HabitsFragment;
 import com.example.betterme.MainActivity;
 import com.example.betterme.Model.HabitModel;
 import com.example.betterme.Model.SymptomModel;
-import com.example.betterme.SymptomsFragment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,7 +23,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public static final String TAG = "Database";
 
-    private static final int VERSION = 16;
+    private static final int VERSION = 20;
     private static final String NAME = "habitDB";  //Database name
 
     //User Table variables
@@ -322,16 +319,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.replace(SYMPTOM_TRACKING_TABLE, null, cv);
     }
 
-    public void updateHabit(int id, String habit) {
+    public void updateHabit(int id, String habit, String startDate, String endDate) {
         ContentValues cv = new ContentValues();
         cv.put(HABIT_NAME, habit);
-        db.update(HABIT_TRACKING_TABLE, cv, HABIT_ID + "= ?", new String[] {String.valueOf(id)});
+        cv.put(HABIT_START_DATE, startDate);
+        cv.put(HABIT_END_DATE, endDate);
+        db.update(HABIT_TABLE, cv, HABIT_ID + "= ?", new String[] {String.valueOf(id)});
     }
 
-    public void updateSymptom(int id, String symptom) {
+    public void updateSymptom(int id, String symptom, String startDate, String endDate) {
         ContentValues cv = new ContentValues();
         cv.put(SYMPTOM_NAME, symptom);
-        db.update(SYMPTOM_TRACKING_TABLE, cv, SYMPTOM_ID + "= ?", new String[] {String.valueOf(id)});
+        cv.put(SYMPTOM_START_DATE, startDate);
+        cv.put(SYMPTOM_END_DATE, endDate);
+        db.update(SYMPTOM_TABLE, cv, SYMPTOM_ID + "= ?", new String[] {String.valueOf(id)});
     }
 
     public void deleteHabit(int id){

@@ -3,12 +3,6 @@ package com.example.betterme;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +10,14 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.example.betterme.Adapter.HabitAdapter;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.betterme.Adapter.SymptomAdapter;
-import com.example.betterme.Model.HabitModel;
 import com.example.betterme.Model.SymptomModel;
 import com.example.betterme.Utils.DataHelper;
 import com.example.betterme.Utils.DatabaseHandler;
@@ -70,7 +69,9 @@ public class SymptomsFragment extends Fragment implements DialogCloseListener{
         db = new DatabaseHandler(this.getContext());
         db.openDatabase();
 
-        symptomList = new ArrayList<>();
+        if(symptomList != null && symptomList.size() !=0) {
+            symptomList = new ArrayList<>();
+        }
 
         symptomsRecyclerView = v.findViewById(R.id.symptomsRecyclerView);
         symptomsRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -79,6 +80,9 @@ public class SymptomsFragment extends Fragment implements DialogCloseListener{
         symptomsRecyclerView.setAdapter(symptomAdapter);
 
         symptomAddButton = v.findViewById(R.id.newSymptomButton);
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new RecyclerItemTouchHelperSymptom(symptomAdapter));
+        itemTouchHelper.attachToRecyclerView(symptomsRecyclerView);
 
         try {
             symptomList = db.getAllSymptoms();

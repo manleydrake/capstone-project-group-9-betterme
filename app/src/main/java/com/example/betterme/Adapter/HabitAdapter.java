@@ -81,18 +81,24 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
         this.habitList = habitList;
     }
 
-   /* public void deleteItem(int position){
-        HabitModel item = habitList.get(position);
-        db.deleteHabit(item.getId());
-        habitList.remove(position);
-        notifyItemRemoved(position);
-    }*/
+   public void deleteItem(int position){
+        HabitModel item;
+            if (habitList != null && habitList.size() !=0) {
+                item = habitList.get(position);
+                db.deleteHabit(item.getId());
+            }
+       habitList.remove(position);
+       notifyItemRemoved(position);
+    }
 
     public void editItem(int position){
-        HabitModel item = habitList.get(position);
+        HabitModel item;
         Bundle bundle = new Bundle();
-        bundle.putInt("habitID", item.getId());
-        bundle.putString("habitName", item.getHabit());
+        if(habitList != null && habitList.size() !=0){
+            item = habitList.get(position);
+            bundle.putInt("habitID", item.getId());
+            bundle.putString("habitName", item.getHabit());
+        }
         AddNewHabit fragment = new AddNewHabit();
         fragment.setArguments(bundle);
         fragment.show(activity.getSupportFragmentManager(), AddNewHabit.TAG);

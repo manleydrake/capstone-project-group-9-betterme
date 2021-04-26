@@ -6,14 +6,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TimePicker;
-import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -82,10 +81,15 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
         //getArguments to pass any data from adapters to fragments
         final Bundle bundle = getArguments();
         if(bundle != null){
+            Log.d("AddNewSymptom", "Bundle not null");
             isUpdate = true;
             String symptom = bundle.getString("symptomName");
             newSymptomText.setText(symptom);
-            assert symptom != null;
+            Log.d("AddNewSymptom", "edit symptom name: " + symptom);
+
+            //the below code needed to be commented out for the edit symptom to work
+            //assert symptom != null;
+
             //>0 then text exists and we want to save to be valid
             if(symptom.length()>0){
                 //ToDo: change color to be theme
@@ -130,7 +134,12 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
             String startDate = newSymptomStartDate.getText().toString();
             String endDate = newSymptomEndDate.getText().toString();
             if(finalIsUpdate){
-                db.updateSymptom(bundle.getInt("symptomID"), text);
+                db.updateSymptom(bundle.getInt("symptomID"), text, startDate, endDate);
+                try {
+                    updateSymptoms();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
             else{
                 SymptomModel symptom = new SymptomModel();

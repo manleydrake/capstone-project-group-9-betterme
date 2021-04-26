@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -68,7 +69,9 @@ public class HabitsFragment extends Fragment implements DialogCloseListener {
         db = new DatabaseHandler(this.getContext());
         db.openDatabase();
 
-        habitList = new ArrayList<>();
+        if(habitList != null && habitList.size() !=0) {
+            habitList = new ArrayList<>();
+        }
 
         habitsRecyclerView = v.findViewById(R.id.habitsRecyclerView);
         habitsRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -78,6 +81,9 @@ public class HabitsFragment extends Fragment implements DialogCloseListener {
 
 
         habitAddButton = v.findViewById(R.id.newHabitButton);
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new RecyclerItemTouchHelper(habitsAdapter));
+        itemTouchHelper.attachToRecyclerView(habitsRecyclerView);
 
 
 
