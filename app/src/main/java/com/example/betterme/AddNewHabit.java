@@ -82,7 +82,10 @@ public class AddNewHabit extends BottomSheetDialogFragment {
             isUpdate = true;
             String habit = bundle.getString("habitName");
             newHabitText.setText(habit);
-            assert habit != null;
+
+            //the below code needed to be commented out for the edit symptom to work
+            //assert habit != null;
+
             //if the habit is greater than 0 then text exists and we want save to be a valid option
             if(habit.length()>0){
                 //ToDo: change this color to be in line with a theme

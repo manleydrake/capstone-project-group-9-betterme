@@ -86,7 +86,10 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
             String symptom = bundle.getString("symptomName");
             newSymptomText.setText(symptom);
             Log.d("AddNewSymptom", "edit symptom name: " + symptom);
-            assert symptom != null;
+
+            //the below code needed to be commented out for the edit symptom to work
+            //assert symptom != null;
+
             //>0 then text exists and we want to save to be valid
             if(symptom.length()>0){
                 //ToDo: change color to be theme
