@@ -75,6 +75,7 @@ public class AddNewHabit extends BottomSheetDialogFragment {
 
         //checks if we are trying to update a habit or trying to create a new habit
         boolean isUpdate = false;
+        
         //getArguments is used to pass any data from adapters to fragments
         final Bundle bundle = getArguments();
         if(bundle != null){
@@ -83,7 +84,7 @@ public class AddNewHabit extends BottomSheetDialogFragment {
             String habit = bundle.getString("habitName");
             newHabitText.setText(habit);
 
-            //the below code needed to be commented out for the edit symptom to work
+            //the below code needed to be commented out for the edit habit to work
             //assert habit != null;
 
             //if the habit is greater than 0 then text exists and we want save to be a valid option
@@ -122,17 +123,22 @@ public class AddNewHabit extends BottomSheetDialogFragment {
             }
         });
 
+        //formats dates to MM/DD/YYYY
         newHabitStartDate.addTextChangedListener(new DateTextWatcher());
         newHabitEndDate.addTextChangedListener(new DateTextWatcher());
 
+        //determines if we are updating an existing habit
         boolean finalIsUpdate = isUpdate;
+
+        //listening to see if the Save button will be pressed
         newHabitSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //check if we are trying to update an existing habit or enter a new habit
                 String text = newHabitText.getText().toString();
                 String startDate = newHabitStartDate.getText().toString();
                 String endDate = newHabitEndDate.getText().toString();
+
+                //if updating, send new updated habit information to the database
                 if(finalIsUpdate){
                     Log.d("AddNewHabit", "Updating Existing Habit");
                     db.updateHabit(bundle.getInt("habitID"), text, startDate, endDate);
@@ -142,6 +148,7 @@ public class AddNewHabit extends BottomSheetDialogFragment {
                         e.printStackTrace();
                     }
                 }
+                //if not updating, add a new habit list item
                 else{
                     HabitModel habit = new HabitModel();
                     habit.setHabit(text);
@@ -175,6 +182,7 @@ public class AddNewHabit extends BottomSheetDialogFragment {
         }
     }
 
+    //Forces the UI to refresh and show any new habits/remove deleted ones
     public void updateHabits() throws ParseException {
         habitsAdapter = new HabitAdapter(db, (MainActivity) this.getActivity());
         habitsRecyclerView.setAdapter(habitsAdapter);

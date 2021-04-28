@@ -40,7 +40,6 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
     private SymptomAdapter symptomsAdapter;
     public static RecyclerView symptomsRecyclerView = SymptomsFragment.symptomsRecyclerView;
     public static DataHelper dataHelper = MainActivity.dataHelper;
-    //private TimePicker simpleTimePicker;
 
     public static AddNewSymptom newInstance(){
         return new AddNewSymptom();
@@ -65,8 +64,7 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
-        //simpleTimePicker =getView().findViewById(R.id.timePicker1);
-        //simpleTimePicker.setIs24HourView(false);
+        //connect variables to UI
         newSymptomText = getView().findViewById(R.id.newSymptomText);
         newSymptomStartDate = getView().findViewById(R.id.newSymptomStartDate);
         newSymptomEndDate = getView().findViewById(R.id.newSymptomEndDate);
@@ -80,6 +78,7 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
 
         //getArguments to pass any data from adapters to fragments
         final Bundle bundle = getArguments();
+        // if the bundle is not null then we are updating a symptom instead of adding a new one
         if(bundle != null){
             Log.d("AddNewSymptom", "Bundle not null");
             isUpdate = true;
@@ -87,17 +86,20 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
             newSymptomText.setText(symptom);
             Log.d("AddNewSymptom", "edit symptom name: " + symptom);
 
-            //the below code needed to be commented out for the edit symptom to work
             //assert symptom != null;
 
-            //>0 then text exists and we want to save to be valid
+            //>0 then text exists and we want the save to be a valid option
             if(symptom.length()>0){
-                //ToDo: change color to be theme
                 newSymptomSaveButton.setTextColor(ContextCompat.getColor(getContext(), R.color.LightBlue));
             }
 
         }
 
+        //format dates to MM/DD/YYYY
+        newSymptomStartDate.addTextChangedListener(new DateTextWatcher());
+        newSymptomEndDate.addTextChangedListener(new DateTextWatcher());
+
+        //listen if the user will alter the symptom name text
         newSymptomText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -125,14 +127,19 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
         }
     });
 
+    //isUpdate dictates if we are adding a new symptom (False) or updating an existing (True)
     boolean finalIsUpdate = isUpdate;
+
+    //listen for the user to press Save
     newSymptomSaveButton.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            //check if we are trying to update and existing symptom or enter a new one
             String text = newSymptomText.getText().toString();
             String startDate = newSymptomStartDate.getText().toString();
             String endDate = newSymptomEndDate.getText().toString();
+
+            //check if we are trying to update and existing symptom or enter a new one
+            //give information to database
             if(finalIsUpdate){
                 db.updateSymptom(bundle.getInt("symptomID"), text, startDate, endDate);
                 try {
@@ -141,6 +148,7 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
                     e.printStackTrace();
                 }
             }
+            //if not updating, add a new symptom list item
             else{
                 SymptomModel symptom = new SymptomModel();
                 symptom.setSymptom(text);
@@ -159,15 +167,6 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
         }
 
     });
-    /**
-        simpleTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-            @Override
-            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                // display a toast with changed values of time picker
-                Toast.makeText(getContext(), hourOfDay + "  " + minute, Toast.LENGTH_SHORT).show();
-
-            }
-        });**/
     }
     @Override
     public void onDismiss(DialogInterface dialog){
@@ -181,6 +180,7 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
         }
     }
 
+    //forces the UI to refresh and show any new symptoms/delete old ones
     public void updateSymptoms() throws ParseException {
         symptomsAdapter = new SymptomAdapter(db, (MainActivity) this.getActivity());
         symptomsRecyclerView.setAdapter(symptomsAdapter);
