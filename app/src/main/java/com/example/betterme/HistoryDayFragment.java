@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CalendarView;
+import android.widget.ImageButton;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -25,6 +25,7 @@ import java.util.List;
 
 public class HistoryDayFragment extends Fragment {
 
+    //initialize variables
     public static RecyclerView historyHabitRecyclerView;
     private HabitAdapter habitsAdapter;
 
@@ -34,6 +35,7 @@ public class HistoryDayFragment extends Fragment {
     private List<HabitModel> habitList;
     private List<SymptomModel> symptomList;
     private DatabaseHandler db;
+    private ImageButton backButton;
 
     public static DataHelper dataHelper = MainActivity.dataHelper;
 
@@ -46,6 +48,8 @@ public class HistoryDayFragment extends Fragment {
         db.openDatabase();
 
         habitList = new ArrayList<>();
+
+        backButton = v.findViewById(R.id.historyDayBack);
 
         historyHabitRecyclerView = v.findViewById(R.id.historyHabitRecyclerView);
         historyHabitRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -61,16 +65,30 @@ public class HistoryDayFragment extends Fragment {
         symptomAdapter = new SymptomAdapter(db, (MainActivity) this.getActivity());
         historySymptomsRecyclerView.setAdapter(symptomAdapter);
 
-
-        habitList = db.getDailyHabits(dataHelper.getHistorySelectedDate());
+        try {
+            habitList = db.getAllHabits(dataHelper.getHistorySelectedDate());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         Collections.reverse(habitList);
         habitsAdapter.setHabits(habitList);
 
-        symptomList = db.getDailySymptoms(dataHelper.getHistorySelectedDate());
+        try {
+            symptomList = db.getAllSymptoms(dataHelper.getHistorySelectedDate());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         Collections.reverse(symptomList);
         symptomAdapter.setSymptoms(symptomList);
 
-        //ToDo: link to a return button that when clicked will take the user back to HistoryFrgment
+        //move back to History screen when back button is pressed
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new HistoryFragment()).commit();
+            }
+        });
 
         return v;
     }

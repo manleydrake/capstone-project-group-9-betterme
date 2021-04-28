@@ -110,7 +110,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public void insertHabit(HabitModel habit) {
-        //ToDo: change this to be inserting into habit and habit tracking tables separately (remove unneccessary columns from habit tracking table)
         ContentValues cv = new ContentValues();
         cv.put(HABIT_NAME, habit.getHabit());
         cv.put(HABIT_START_DATE, habit.getHabitStartDate());
@@ -151,7 +150,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Log.d(TAG, "database insertion successful" );
 
     }
-    public List<HabitModel> getAllHabits() throws ParseException {
+
+    public List<HabitModel> getAllHabits(String displayDate) throws ParseException {
         List<HabitModel> habitList = new ArrayList<>();
         Cursor cur = null;
         db.beginTransaction();
@@ -164,12 +164,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
                         Date startDate = sdf.parse(cur.getString(cur.getColumnIndex(HABIT_START_DATE)));
                         Date endDate = sdf.parse(cur.getString(cur.getColumnIndex(HABIT_END_DATE)));
-                        if ((endDate.after(sdf.parse(dataHelper.getHabitCurrDate())) || endDate.equals(sdf.parse(dataHelper.getHabitCurrDate())))
-                                && (startDate.equals(sdf.parse(dataHelper.getHabitCurrDate())) || startDate.before(sdf.parse(dataHelper.getHabitCurrDate())))) {
+                        if ((endDate.after(sdf.parse(displayDate)) || endDate.equals(sdf.parse(displayDate)))
+                                && (startDate.equals(sdf.parse(displayDate)) || startDate.before(sdf.parse(displayDate)))) {
                             HabitModel habit = new HabitModel();
                             habit.setId(cur.getInt(cur.getColumnIndex(HABIT_ID)));
                             habit.setHabit(cur.getString(cur.getColumnIndex(HABIT_NAME)));
-                            String habitTrackQuery = HABIT_TRACK_DATE + " = \'" + dataHelper.getHabitCurrDate() + "\' and " + HABIT_NAME + " = \'" + cur.getString(cur.getColumnIndex(HABIT_NAME)) + "\'";
+                            String habitTrackQuery = HABIT_TRACK_DATE + " = \'" + displayDate + "\' and " + HABIT_NAME + " = \'" + cur.getString(cur.getColumnIndex(HABIT_NAME)) + "\'";
                             Log.d(TAG, habitTrackQuery);
                             Cursor habitTrackQueryResults = db.query(HABIT_TRACKING_TABLE, null, habitTrackQuery, null, null, null, null, null);
                             if(habitTrackQueryResults != null){
@@ -198,7 +198,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return habitList;
     }
 
-    public List<SymptomModel> getAllSymptoms() throws ParseException {
+    public List<SymptomModel> getAllSymptoms(String displayDate) throws ParseException {
         List<SymptomModel> symptomList = new ArrayList<>();
         Cursor cur = null;
         db.beginTransaction();
@@ -212,11 +212,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
                         Date startDate = sdf.parse(cur.getString(cur.getColumnIndex(SYMPTOM_START_DATE)));
                         Date endDate = sdf.parse(cur.getString(cur.getColumnIndex(SYMPTOM_END_DATE)));
-                        if ((endDate.after(sdf.parse(dataHelper.getSymptomCurrDate())) || endDate.equals(sdf.parse(dataHelper.getSymptomCurrDate())))
-                                && (startDate.equals(sdf.parse(dataHelper.getSymptomCurrDate())) || startDate.before(sdf.parse(dataHelper.getSymptomCurrDate())))) {
+                        if ((endDate.after(sdf.parse(displayDate)) || endDate.equals(sdf.parse(displayDate)))
+                                && (startDate.equals(sdf.parse(displayDate)) || startDate.before(sdf.parse(displayDate)))) {
                             symptom.setId(cur.getInt(cur.getColumnIndex(SYMPTOM_ID)));
                             symptom.setSymptom(cur.getString(cur.getColumnIndex(SYMPTOM_NAME)));
-                            String symptomTrackQuery = SYMPTOM_TRACK_DATE + " = \'" + dataHelper.getSymptomCurrDate() + "\' and " + SYMPTOM_NAME + " = \'" + cur.getString(cur.getColumnIndex(SYMPTOM_NAME)) + "\'";
+                            String symptomTrackQuery = SYMPTOM_TRACK_DATE + " = \'" + displayDate + "\' and " + SYMPTOM_NAME + " = \'" + cur.getString(cur.getColumnIndex(SYMPTOM_NAME)) + "\'";
                             Log.d(TAG, symptomTrackQuery);
                             Cursor symptomTrackQueryResults = db.query(SYMPTOM_TRACKING_TABLE, null, symptomTrackQuery, null, null, null, null, null);
                             if(symptomTrackQueryResults != null){
@@ -245,6 +245,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return symptomList;
     }
 
+    //currently not using
     public List<HabitModel> getDailyHabits(String day){
         List<HabitModel> dailyHabitList = new ArrayList<>();
         Cursor cur = null;
@@ -274,6 +275,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return dailyHabitList;
     }
 
+    //currently not using
     public List<SymptomModel> getDailySymptoms(String day){
         List<SymptomModel> dailySymptomList = new ArrayList<>();
         Cursor cur = null;

@@ -184,7 +184,7 @@ public class AddNewSymptom extends BottomSheetDialogFragment{
     public void updateSymptoms() throws ParseException {
         symptomsAdapter = new SymptomAdapter(db, (MainActivity) this.getActivity());
         symptomsRecyclerView.setAdapter(symptomsAdapter);
-        symptomList = db.getAllSymptoms();
+        symptomList = db.getAllSymptoms(dataHelper.getSymptomCurrDate());
         Collections.reverse(symptomList);
         symptomsAdapter.setSymptoms(symptomList);
         symptomsAdapter.notifyDataSetChanged();

@@ -88,7 +88,7 @@ public class HabitsFragment extends Fragment implements DialogCloseListener {
 
 
         try {
-            habitList = db.getAllHabits();
+            habitList = db.getAllHabits(dataHelper.getHabitCurrDate());
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -142,7 +142,7 @@ public class HabitsFragment extends Fragment implements DialogCloseListener {
     public void updateHabits() throws ParseException {
         habitsAdapter = new HabitAdapter(db, (MainActivity) this.getActivity());
         habitsRecyclerView.setAdapter(habitsAdapter);
-        habitList = db.getAllHabits();
+        habitList = db.getAllHabits(dataHelper.getHabitCurrDate());
         Collections.reverse(habitList);
         habitsAdapter.setHabits(habitList);
         habitsAdapter.notifyDataSetChanged();
@@ -150,7 +150,7 @@ public class HabitsFragment extends Fragment implements DialogCloseListener {
 
     @Override
     public void handleDialogClose(DialogInterface dialog) throws ParseException {
-        habitList = db.getAllHabits();
+        habitList = db.getAllHabits(dataHelper.getHabitCurrDate());
         Collections.reverse(habitList);
         habitsAdapter.setHabits(habitList);
         habitsAdapter.notifyDataSetChanged();

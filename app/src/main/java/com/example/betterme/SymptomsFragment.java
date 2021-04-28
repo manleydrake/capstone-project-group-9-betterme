@@ -85,7 +85,7 @@ public class SymptomsFragment extends Fragment implements DialogCloseListener{
         itemTouchHelper.attachToRecyclerView(symptomsRecyclerView);
 
         try {
-            symptomList = db.getAllSymptoms();
+            symptomList = db.getAllSymptoms(dataHelper.getSymptomCurrDate());
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -141,7 +141,7 @@ public class SymptomsFragment extends Fragment implements DialogCloseListener{
     public void updateSymptoms() throws ParseException {
         symptomAdapter = new SymptomAdapter(db, (MainActivity) this.getActivity());
         symptomsRecyclerView.setAdapter(symptomAdapter);
-        symptomList = db.getAllSymptoms();
+        symptomList = db.getAllSymptoms(dataHelper.getSymptomCurrDate());
         Collections.reverse(symptomList);
         symptomAdapter.setSymptoms(symptomList);
         symptomAdapter.notifyDataSetChanged();
@@ -149,7 +149,7 @@ public class SymptomsFragment extends Fragment implements DialogCloseListener{
 
     @Override
     public void handleDialogClose(DialogInterface dialog) throws ParseException {
-        symptomList = db.getAllSymptoms();
+        symptomList = db.getAllSymptoms(dataHelper.getSymptomCurrDate());
         Collections.reverse(symptomList);
         symptomAdapter.setSymptoms(symptomList);
         symptomAdapter.notifyDataSetChanged();

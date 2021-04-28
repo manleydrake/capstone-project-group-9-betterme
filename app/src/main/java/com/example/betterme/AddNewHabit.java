@@ -75,7 +75,7 @@ public class AddNewHabit extends BottomSheetDialogFragment {
 
         //checks if we are trying to update a habit or trying to create a new habit
         boolean isUpdate = false;
-        
+
         //getArguments is used to pass any data from adapters to fragments
         final Bundle bundle = getArguments();
         if(bundle != null){
@@ -186,7 +186,7 @@ public class AddNewHabit extends BottomSheetDialogFragment {
     public void updateHabits() throws ParseException {
         habitsAdapter = new HabitAdapter(db, (MainActivity) this.getActivity());
         habitsRecyclerView.setAdapter(habitsAdapter);
-        habitList = db.getAllHabits();
+        habitList = db.getAllHabits(dataHelper.getHabitCurrDate());
         Collections.reverse(habitList);
         habitsAdapter.setHabits(habitList);
         habitsAdapter.notifyDataSetChanged();
