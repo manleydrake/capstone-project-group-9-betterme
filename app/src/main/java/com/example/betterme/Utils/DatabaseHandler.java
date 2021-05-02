@@ -23,7 +23,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public static final String TAG = "Database";
 
-    private static final int VERSION = 20;
+    private static final int VERSION = 22;
     private static final String NAME = "habitDB";  //Database name
 
     //User Table variables
@@ -32,9 +32,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String USERNAME = "username";
     private static final String USER_PASSWORD = "password";
     //Creates table
-    private static final String CREATE_USER_TABLE = "CREATE TABLE " + USER_TABLE + "(" + USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                                            + USERNAME + " TEXT, " + USER_PASSWORD + " TEXT)";
-
+    private static final String CREATE_USER_TABLE = "CREATE TABLE " + USER_TABLE + "(" +  USERNAME + " TEXT, " + USER_PASSWORD + " TEXT, PRIMARY KEY (" + USERNAME + "))";
     //Habit table variables
     private static final String HABIT_TABLE = "habitTable";
     private static final String HABIT_ID = "habitID";
@@ -149,6 +147,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.insert(SYMPTOM_TRACKING_TABLE, null, cv2);
         Log.d(TAG, "database insertion successful" );
 
+    }
+
+    public void insertUser(String username, String password) {
+        ContentValues cv = new ContentValues();
+        cv.put(USERNAME, username);
+        cv.put(USER_PASSWORD, password);
+        db.insert(USER_TABLE, null, cv);
+        Log.d(TAG, "database insertion successful" );
     }
 
     public List<HabitModel> getAllHabits(String displayDate) throws ParseException {
