@@ -5,6 +5,7 @@ import android.app.Activity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -22,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.betterme.MainActivity;
 import com.example.betterme.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -73,6 +75,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 //Complete and destroy login activity once successful
                 finish();
+                Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+                LoginActivity.this.startActivity(myIntent);
             }
         });
 
@@ -127,3 +131,4 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 }
+
