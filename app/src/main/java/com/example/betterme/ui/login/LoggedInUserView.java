@@ -3,7 +3,7 @@ package com.example.betterme.ui.login;
 /**
  * Class exposing authenticated user details to the UI.
  */
-class LoggedInUserView {
+public class LoggedInUserView {
     private String displayName;
     //... other data fields that may be accessible to the UI
 
@@ -11,7 +11,13 @@ class LoggedInUserView {
         this.displayName = displayName;
     }
 
-    String getDisplayName() {
+    public void setDisplayName(String displayName){
+        this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
         return displayName;
     }
+
+
 }

@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.example.betterme.MainActivity;
 import com.example.betterme.R;
 import com.example.betterme.Utils.DatabaseHandler;
+import com.example.betterme.data.model.LoggedInUser;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -120,7 +121,10 @@ public class LoginActivity extends AppCompatActivity {
                 loadingProgressBar.setVisibility(View.VISIBLE);
                 loginViewModel.login(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString());
-                db.insertUser(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+                LoggedInUser user = new LoggedInUser();
+                user.setUsername(usernameEditText.getText().toString());
+                user.setPassword(passwordEditText.getText().toString());
+                db.insertUser(user);
             }
         });
     }

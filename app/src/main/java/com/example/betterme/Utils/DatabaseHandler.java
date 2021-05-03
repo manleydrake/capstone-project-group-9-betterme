@@ -10,6 +10,7 @@ import android.util.Log;
 import com.example.betterme.MainActivity;
 import com.example.betterme.Model.HabitModel;
 import com.example.betterme.Model.SymptomModel;
+import com.example.betterme.data.model.LoggedInUser;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -149,10 +150,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
-    public void insertUser(String username, String password) {
+    public void insertUser(LoggedInUser user) {
         ContentValues cv = new ContentValues();
-        cv.put(USERNAME, username);
-        cv.put(USER_PASSWORD, password);
+        cv.put(USERNAME, user.getUsername());
+        cv.put(USER_PASSWORD, user.getPassword());
         db.insert(USER_TABLE, null, cv);
         Log.d(TAG, "database insertion successful" );
     }
