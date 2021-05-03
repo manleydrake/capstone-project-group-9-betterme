@@ -11,6 +11,7 @@ import com.example.betterme.MainActivity;
 import com.example.betterme.Model.HabitModel;
 import com.example.betterme.Model.SymptomModel;
 import com.example.betterme.data.model.LoggedInUser;
+import com.example.betterme.ui.login.LoginActivity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,15 +25,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public static final String TAG = "Database";
 
-    private static final int VERSION = 22;
+    private static final int VERSION = 24;
     private static final String NAME = "habitDB";  //Database name
 
     //User Table variables
     private static final String USER_TABLE = "user";
-    private static final String USER_ID = "userID";
     private static final String USERNAME = "username";
     private static final String USER_PASSWORD = "password";
-    //Creates table
+
+    //Creates user table
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + USER_TABLE + "(" +  USERNAME + " TEXT, " + USER_PASSWORD + " TEXT, PRIMARY KEY (" + USERNAME + "))";
     //Habit table variables
     private static final String HABIT_TABLE = "habitTable";
@@ -43,7 +44,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     //Create habit table
     private static final String CREATE_HABIT_TABLE = "CREATE TABLE " + HABIT_TABLE + "(" + HABIT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + USER_ID + " INTEGER, " + HABIT_NAME + " TEXT, " + HABIT_START_DATE + " TEXT, " + HABIT_END_DATE + " TEXT)";
+            + USERNAME + " TEXT, " + HABIT_NAME + " TEXT, " + HABIT_START_DATE + " TEXT, " + HABIT_END_DATE + " TEXT)";
 
     //Habit Tracking Table variables
     private static final String HABIT_TRACKING_TABLE = "habit_tracking";
@@ -51,8 +52,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String HABIT_COMPLETE = "habitStatus";
 
     //Create habit tracking table
-    private static final String CREATE_HABIT_TRACKING_TABLE = "CREATE TABLE " + HABIT_TRACKING_TABLE + "(" + HABIT_NAME + " TEXT, " + HABIT_COMPLETE + " INTEGER, "
-            + HABIT_TRACK_DATE + " TEXT, PRIMARY KEY (" + HABIT_NAME + ", " + HABIT_TRACK_DATE + "))";
+    private static final String CREATE_HABIT_TRACKING_TABLE = "CREATE TABLE " + HABIT_TRACKING_TABLE + "(" + USERNAME + " TEXT, " +
+            HABIT_NAME + " TEXT, " + HABIT_COMPLETE + " INTEGER, "
+            + HABIT_TRACK_DATE + " TEXT, PRIMARY KEY (" + HABIT_NAME + ", " + HABIT_TRACK_DATE + ", " + USERNAME + "))";
 
     //Symptom Table variables
     private static final String SYMPTOM_TABLE = "symptomTable";
@@ -63,7 +65,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Create symptom table
     private static final String CREATE_SYMPTOM_TABLE = "CREATE TABLE " + SYMPTOM_TABLE + "(" + SYMPTOM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + USER_ID + " INTEGER, " + SYMPTOM_NAME + " TEXT, " + SYMPTOM_START_DATE + " TEXT, " + SYMPTOM_END_DATE + " TEXT)";
+            + USERNAME + " TEXT, " + SYMPTOM_NAME + " TEXT, " + SYMPTOM_START_DATE + " TEXT, " + SYMPTOM_END_DATE + " TEXT)";
 
     //Symptom tracking table variables
     private static final String SYMPTOM_TRACKING_TABLE = "symptomTracking";
@@ -71,8 +73,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String SYMPTOM_RATING = "symptomRating";
 
     //Create symptom tracking table
-    private static final String CREATE_SYMPTOM_TRACKING_TABLE = "CREATE TABLE " + SYMPTOM_TRACKING_TABLE + "(" + SYMPTOM_NAME + " TEXT, " + SYMPTOM_RATING + " INTEGER, "
-            + SYMPTOM_TRACK_DATE + " TEXT, PRIMARY KEY (" + SYMPTOM_NAME + ", " + SYMPTOM_TRACK_DATE + "))";
+    private static final String CREATE_SYMPTOM_TRACKING_TABLE = "CREATE TABLE " + SYMPTOM_TRACKING_TABLE + "(" + USERNAME + " TEXT, " +
+            SYMPTOM_NAME + " TEXT, " + SYMPTOM_RATING + " INTEGER, "
+            + SYMPTOM_TRACK_DATE + " TEXT, PRIMARY KEY (" + SYMPTOM_NAME + ", " + SYMPTOM_TRACK_DATE + ", " + USERNAME + "))";
 
 
     private SQLiteDatabase db;
@@ -116,6 +119,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Log.d(TAG, "passing " + HABIT_NAME);
         Log.d(TAG, "passing start date " + HABIT_START_DATE);
         Log.d(TAG, "passing end date " + HABIT_END_DATE);
+
+        LoggedInUser user = LoginActivity.user;
+        cv.put(USERNAME, user.getUsername());
+
         Log.d(TAG, "cv is " + cv);
         db.insert(HABIT_TABLE,null,cv);
 
@@ -123,6 +130,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cv2.put(HABIT_NAME, habit.getHabit());
         cv2.put(HABIT_COMPLETE, habit.getStatus());
         cv2.put(HABIT_TRACK_DATE, habit.getHabitTrackDate());
+        cv2.put(USERNAME, user.getUsername());
         Log.d(TAG, "passing " + HABIT_COMPLETE);
         Log.d(TAG, "passing " + HABIT_TRACK_DATE);
         db.insert(HABIT_TRACKING_TABLE, null, cv2);
@@ -136,6 +144,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cv.put(SYMPTOM_END_DATE, symptom.getSymptomEndDate());
         Log.d(TAG, "passing " + SYMPTOM_NAME);
         Log.d(TAG, "passing " + SYMPTOM_START_DATE + " to " + SYMPTOM_END_DATE);
+
+        LoggedInUser user = LoginActivity.user;
+        cv.put(USERNAME, user.getUsername());
+
         Log.d(TAG, "cv is " + cv);
         db.insert(SYMPTOM_TABLE, null, cv);
 
@@ -143,6 +155,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cv2.put(SYMPTOM_NAME, symptom.getSymptom());
         cv2.put(SYMPTOM_RATING, symptom.getRating());
         cv2.put(SYMPTOM_TRACK_DATE, symptom.getSymptomTrackDate());
+        cv2.put(USERNAME, user.getUsername());
         Log.d(TAG, "passing " + SYMPTOM_RATING);
         Log.d(TAG, "passing " + SYMPTOM_TRACK_DATE);
         db.insert(SYMPTOM_TRACKING_TABLE, null, cv2);
@@ -160,10 +173,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public List<HabitModel> getAllHabits(String displayDate) throws ParseException {
         List<HabitModel> habitList = new ArrayList<>();
+        LoggedInUser user = LoginActivity.user;
         Cursor cur = null;
         db.beginTransaction();
         try{
-            cur = db.query(HABIT_TABLE, null, null, null, null, null, null, null);
+            String userHabitQuery = USERNAME + " = \'" + user.getUsername() + "\'";
+            cur = db.query(HABIT_TABLE, null, userHabitQuery, null, null, null, null, null);
             if(cur != null){
                 if(cur.moveToFirst()){
                     do {
@@ -207,10 +222,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public List<SymptomModel> getAllSymptoms(String displayDate) throws ParseException {
         List<SymptomModel> symptomList = new ArrayList<>();
+        LoggedInUser user = LoginActivity.user;
         Cursor cur = null;
         db.beginTransaction();
         try {
-            cur = db.query(SYMPTOM_TABLE, null, null, null, null, null, null, null);
+            String userSymptomQuery = USERNAME + " = \'" + user.getUsername() + "\'";
+            cur = db.query(SYMPTOM_TABLE, null, userSymptomQuery, null, null, null, null, null);
             if (cur != null) {
                 if (cur.moveToFirst()) {
                     do {

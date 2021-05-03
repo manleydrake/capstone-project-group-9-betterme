@@ -15,7 +15,7 @@ public class LoggedInUser {
     }
 
     public LoggedInUser() {
-        
+
     }
 
     public String getUserId() {
